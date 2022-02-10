@@ -14,5 +14,7 @@ class RecipeManager {
     
     var selectedRecipe: Recipe!
     
+    var tryAlso: [Recipe]?
+    
     
 }

@@ -10,6 +10,7 @@ class MyCustomCell: UITableViewCell {
         let imgView = UIImageView()
         imgView.image = UIImage(systemName: "square.and.arrow.up")
         imgView.contentMode = .scaleAspectFit
+     
         imgView.translatesAutoresizingMaskIntoConstraints = false
         return imgView
     }()
@@ -18,6 +19,7 @@ class MyCustomCell: UITableViewCell {
         let label = UILabel()
         label.text = " Label recipe "
         label.numberOfLines = 1
+       
         //…
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -40,7 +42,8 @@ class MyCustomCell: UITableViewCell {
         
         //recipeLabel.backgroundColor = UIColor.yellow
        // recipeDescription.backgroundColor = .green
-        
+      
+        backgroundColor = .none
         addSubview(photoRecipe)
         addSubview(recipeLabel)
         addSubview(recipeDescription)
@@ -57,7 +60,7 @@ class MyCustomCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        
+    
         
         // recipeLabel.frame = CGRect(x: 20, y: 0, width: 70, height: 30)
         

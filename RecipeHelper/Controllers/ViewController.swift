@@ -34,7 +34,11 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .red
+        let startColor = #colorLiteral(red: 0.7110412717, green: 0.7906122804, blue: 0.8905088305, alpha: 1), endColor = #colorLiteral(red: 0.9450980392, green: 0.8509803922, blue: 0.9568627451, alpha: 1)
+       
+        view.applyGradients(cornerRadius: 0, startColor: startColor, endColor: endColor)
+        
+        tableView.backgroundColor = .none
         setupTableView()
         
         
@@ -56,6 +60,7 @@ class ViewController: UIViewController {
 //                print(self?.recipeModel?.hits?[0].recipe?.label)
                 // print(self?.recipeModel?.hits?.first.recipe?.label)
                 self?.tableView.reloadData()
+                
             }
             
         })
@@ -111,10 +116,14 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         
         if let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? MyCustomCell {
             
-            
+            let backgroundView = UIView()
+            backgroundView.backgroundColor = #colorLiteral(red: 0.9450980392, green: 0.8509803922, blue: 0.9568627451, alpha: 1)
+            cell.selectedBackgroundView = backgroundView
             
             if isFiltering {
-                let recipe = recipeModel.prefix(10)[indexPath.row]
+                let recipe = filterRecipeModel.prefix(10)[indexPath.row]
+                
+                
                 
                 cell.recipeLabel.text = recipe.label
                 cell.recipeDescription.text = recipe.ingredientLines?.joined(separator: ", ")
@@ -127,7 +136,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
                 cell.recipeDescription.text = recipe.ingredientLines?.joined(separator: ", ")
                 cell.photoRecipe.sd_setImage(with: URL(string: recipe.image ?? ""), completed: nil)
                 
-                // cell.backgroundColor = .blue
+                
                 
             }
             return cell
@@ -148,11 +157,16 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         if isFiltering {
             
             RecipeManager.shared.selectedRecipe = filterRecipeModel[indexPath.row]
+            
+            RecipeManager.shared.tryAlso = [filterRecipeModel[indexPath.row + 1], filterRecipeModel[indexPath.row + 2], filterRecipeModel[indexPath.row + 3]]
+            
             present(DetailViewController(), animated: true, completion: nil)
             
         } else {
             
             RecipeManager.shared.selectedRecipe = recipeModel[indexPath.row]
+            
+            RecipeManager.shared.tryAlso = [recipeModel[indexPath.row + 1], recipeModel[indexPath.row + 2], recipeModel[indexPath.row + 3]]
             
             present(DetailViewController(), animated: true, completion: nil)
         }
@@ -174,8 +188,8 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         let header = UIView(frame:  CGRect(x: 0,y: 0,width: view.frame.width,height: 30))
         //header.backgroundColor = .red
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: Int(header.frame.width), height: Int(header.frame.height)))
-        button.setTitle("Sorted by name", for: .normal)
-        button.setTitleColor(.green, for: .normal)
+        button.setTitle("Sorted by name:", for: .normal)
+        button.setTitleColor(.systemPink, for: .normal)
         button.addTarget(self, action:  #selector(sortedButtonAction), for: .touchUpInside)
         header.addSubview(button)
         

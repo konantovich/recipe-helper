@@ -14,8 +14,10 @@ class DetailViewController: UIViewController {
     
     var selectedRecipeModel: Recipe?
     
+    var tryAlso: [Recipe]?
+    
     var collectionView: UICollectionView!
-    var collectionViewData = [UIColor.red, UIColor.green, UIColor.blue]
+   // var collectionViewData = [UIColor.red, UIColor.green, UIColor.blue]
     var viewForCollectionView : UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -27,6 +29,8 @@ class DetailViewController: UIViewController {
         let imgView = UIImageView()
         imgView.image = UIImage(systemName: "square.and.arrow.up")
         imgView.contentMode = .scaleAspectFit
+        imgView.layer.cornerRadius = 10
+        imgView.layer.masksToBounds = true
         imgView.translatesAutoresizingMaskIntoConstraints = false
         return imgView
     }()
@@ -34,7 +38,8 @@ class DetailViewController: UIViewController {
     lazy var recipeLabel : UILabel = {
         let label = UILabel()
         label.text = " Label recipe "
-        
+        label.textAlignment = .left
+        label.font = UIFont(name: label.font.fontName, size: 23)
         label.numberOfLines = 1
         //…
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -55,13 +60,15 @@ class DetailViewController: UIViewController {
     lazy var instructionDescription : UITextView = {
         let textView = UITextView()
         
-        textView.textAlignment = NSTextAlignment.justified
+        textView.textAlignment = .left
         textView.text = "Hello World with https://google.com"
+        textView.font = UIFont(name: UILabel().font.fontName, size: 12)
         textView.linkTextAttributes = [.foregroundColor: UIColor.systemBlue]
         textView.isSelectable = true
         textView.isEditable = false
         textView.isUserInteractionEnabled = true
         textView.dataDetectorTypes = .link
+        textView.backgroundColor = .none
         
         
         //…
@@ -69,17 +76,32 @@ class DetailViewController: UIViewController {
         return textView
     }()
     
+    lazy var tryAlsoLabel : UILabel = {
+        let label = UILabel()
+        label.text = " Try also "
+        
+        label.numberOfLines = 1
+        //…
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.applyGradients(cornerRadius: 0, startColor: #colorLiteral(red: 0.5568627715, green: 0.3529411852, blue: 0.9686274529, alpha: 1), endColor: #colorLiteral(red: 0.9411764741, green: 0.4980392158, blue: 0.3529411852, alpha: 1))
+        
         
         selectedRecipeModel = RecipeManager.shared.selectedRecipe
         
+        tryAlso = RecipeManager.shared.tryAlso
         
-        view.backgroundColor = .white
-        viewForCollectionView.backgroundColor = .yellow
+        
+
+       // view.backgroundColor = .white
+        viewForCollectionView.backgroundColor = .none
         
         //        recipeLabel.backgroundColor = .red
         //        recipeDescription.backgroundColor = .blue
@@ -93,7 +115,6 @@ class DetailViewController: UIViewController {
 
         self.collectionView.register(CollectionViewCell.self, forCellWithReuseIdentifier: "cell")
        
-      
 
         
         
@@ -103,7 +124,7 @@ class DetailViewController: UIViewController {
         self.photoRecipe.sd_setImage(with: URL(string: recipe.image ?? ""), completed: nil)
         self.recipeLabel.text = recipe.label
         self.recipeDescription.text = recipe.ingredientLines?.joined(separator: ", ")
-        self.instructionDescription.text = "see a full recipe: \(URL(string: recipe.url ?? "")!)"
+        self.instructionDescription.text = "See a full recipe: \(URL(string: recipe.url ?? "")!)"
         
         print("selectedRecipeModel", recipe)
         
@@ -120,7 +141,8 @@ class DetailViewController: UIViewController {
         view.addSubview(recipeLabel)
         view.addSubview(recipeDescription)
         view.addSubview(instructionDescription)
-       view.addSubview(viewForCollectionView)
+        view.addSubview(viewForCollectionView)
+        view.addSubview(tryAlsoLabel)
       
         
     }
@@ -153,7 +175,7 @@ class DetailViewController: UIViewController {
         // bounce at the bottom of the collection view
         self.collectionView.alwaysBounceVertical = true
         // set the background to be white
-        self.collectionView.backgroundColor = .white
+        self.collectionView.backgroundColor = .none
         
         self.viewForCollectionView = collectionView
         
@@ -161,7 +183,7 @@ class DetailViewController: UIViewController {
         
     }
     
-    
+
     
     
     private func setupConstraint () {
@@ -169,16 +191,16 @@ class DetailViewController: UIViewController {
         
         
         NSLayoutConstraint.activate([
-            photoRecipe.topAnchor.constraint(equalTo: view.topAnchor, constant: 80),
+            photoRecipe.topAnchor.constraint(equalTo: view.topAnchor, constant: 60),
             photoRecipe.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            photoRecipe.widthAnchor.constraint(equalToConstant: 150),
-            photoRecipe.heightAnchor.constraint(equalToConstant: 150)
+            photoRecipe.widthAnchor.constraint(equalToConstant: 180),
+            photoRecipe.heightAnchor.constraint(equalToConstant: 180)
         ])
         
         NSLayoutConstraint.activate([
             
             recipeLabel.topAnchor.constraint(equalTo: photoRecipe.bottomAnchor, constant: 40),
-            recipeLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            recipeLabel.leadingAnchor.constraint(equalTo: viewForCollectionView.leadingAnchor, constant: 0),
             recipeLabel.heightAnchor.constraint(equalToConstant: 50),
             recipeLabel.widthAnchor.constraint(equalToConstant: 300),
             
@@ -188,7 +210,7 @@ class DetailViewController: UIViewController {
         NSLayoutConstraint.activate([
             
             recipeDescription.topAnchor.constraint(equalTo: recipeLabel.bottomAnchor, constant: 40),
-            recipeDescription.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            recipeDescription.leadingAnchor.constraint(equalTo: viewForCollectionView.leadingAnchor, constant: 0),
             recipeDescription.heightAnchor.constraint(equalToConstant: 80),
             recipeDescription.widthAnchor.constraint(equalToConstant: view.center.x + 80),
             
@@ -198,10 +220,17 @@ class DetailViewController: UIViewController {
         NSLayoutConstraint.activate([
             
             instructionDescription.topAnchor.constraint(equalTo: recipeDescription.bottomAnchor, constant: 40),
-            instructionDescription.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            instructionDescription.leadingAnchor.constraint(equalTo: viewForCollectionView.leadingAnchor, constant: 0),
             instructionDescription.heightAnchor.constraint(equalToConstant: 40),
             instructionDescription.widthAnchor.constraint(equalToConstant: view.center.x + 80),
             
+        ])
+        
+        NSLayoutConstraint.activate([
+            tryAlsoLabel.bottomAnchor.constraint(equalTo: viewForCollectionView.topAnchor, constant: 10),
+            tryAlsoLabel.leadingAnchor.constraint(equalTo: viewForCollectionView.leadingAnchor, constant: 0),
+            tryAlsoLabel.heightAnchor.constraint(equalToConstant: 40),
+            tryAlsoLabel.widthAnchor.constraint(equalToConstant: view.center.x + 80),
         ])
         
         NSLayoutConstraint.activate([
@@ -220,15 +249,20 @@ class DetailViewController: UIViewController {
 
 extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return collectionViewData.count
+        return 3
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         // dequeue the standard cell
         if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? CollectionViewCell {
-        let data = self.collectionViewData[indexPath.item]
-        cell.setupCell(colour: data)
+    //    let data = self.collectionViewData[indexPath.item]
+            guard let tryAlso = tryAlso?[indexPath.row] else {
+                fatalError("Unable to dequeue subclassed cell")
+            }
+            cell.setupCell(recipe: tryAlso )
+           
+            
         return cell
         } else {
             fatalError("Unable to dequeue subclassed cell")
@@ -239,7 +273,21 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
     // if the user clicks on a cell, display a message
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("Collection view at row \(collectionView.tag) selected index path \(indexPath)")
+        
+        
+        
+        guard let tryAlso = tryAlso?[indexPath.row] else {
+            fatalError("Unable to dequeue subclassed cell")
+        }
+        
+        guard let url = URL(string: tryAlso.url ?? "") else { return }
+        UIApplication.shared.open(url)
+        
+        
     }
+    
+    
+    
 }
 
 
