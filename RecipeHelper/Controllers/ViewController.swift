@@ -10,8 +10,8 @@ import SDWebImage
 
 class ViewController: UIViewController {
     
-    var recipeModel: RecipeSearchModel? = nil
-    var filterRecipeModel: RecipeSearchModel?
+    var recipeModel: [Recipe] = []
+    var filterRecipeModel: [Recipe] = []
     
     private var timer: Timer?
     private var sortRecipeInTableView = true
@@ -40,7 +40,7 @@ class ViewController: UIViewController {
         
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 1.5, repeats: false, block: { (_) in
-            NetworkService.shared.fetchEdamamRecipes(search: "apple") {[weak self] recipe in
+            NetworkService.shared.fetchEdamamRecipes(search: "apple") { [weak self] recipe in
                 
                 guard let recipe = recipe,
                       let hits = recipe.hits,
@@ -50,10 +50,10 @@ class ViewController: UIViewController {
                           return
                       }
                 
-                self?.recipeModel = recipe
+                self?.recipeModel = (recipe.hits?.compactMap { $0.recipe }) ?? []
                 
-                print(recipe.hits?[0].recipe?.label)
-                print(self?.recipeModel?.hits?[0].recipe?.label)
+//                print(recipe.hits?[0].recipe?.label)
+//                print(self?.recipeModel?.hits?[0].recipe?.label)
                 // print(self?.recipeModel?.hits?.first.recipe?.label)
                 self?.tableView.reloadData()
             }
@@ -93,17 +93,16 @@ class ViewController: UIViewController {
 }
 
 
-
-
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         
         if isFiltering {
-            return filterRecipeModel?.hits?.prefix(10).count ?? 0
+            return filterRecipeModel.prefix(10).count
         }
-        guard let recipes = recipeModel else {return 0}
-        return (recipes.hits?.prefix(10).count)!
+        
+        return recipeModel.prefix(10).count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -115,18 +114,18 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             
             
             if isFiltering {
-                guard let recipe = filterRecipeModel?.hits?.prefix(10)[indexPath.row] else {return UITableViewCell()}
+                let recipe = recipeModel.prefix(10)[indexPath.row]
                 
-                cell.recipeLabel.text = recipe.recipe?.label
-                cell.recipeDescription.text = recipe.recipe?.ingredientLines?.joined(separator: ", ")
-                cell.photoRecipe.sd_setImage(with: URL(string: recipe.recipe?.image ?? ""), completed: nil)
+                cell.recipeLabel.text = recipe.label
+                cell.recipeDescription.text = recipe.ingredientLines?.joined(separator: ", ")
+                cell.photoRecipe.sd_setImage(with: URL(string: recipe.image ?? ""), completed: nil)
                 
             } else {
-                guard let recipe = recipeModel?.hits?.prefix(10)[indexPath.row] else {return UITableViewCell()}
+                let recipe = recipeModel.prefix(10)[indexPath.row]
                 
-                cell.recipeLabel.text = recipe.recipe?.label
-                cell.recipeDescription.text = recipe.recipe?.ingredientLines?.joined(separator: ", ")
-                cell.photoRecipe.sd_setImage(with: URL(string: recipe.recipe?.image ?? ""), completed: nil)
+                cell.recipeLabel.text = recipe.label
+                cell.recipeDescription.text = recipe.ingredientLines?.joined(separator: ", ")
+                cell.photoRecipe.sd_setImage(with: URL(string: recipe.image ?? ""), completed: nil)
                 
                 // cell.backgroundColor = .blue
                 
@@ -139,6 +138,26 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         
         fatalError("could not dequeueReusableCell")
         
+        
+        
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print(indexPath)
+        
+        if isFiltering {
+            
+            RecipeManager.shared.selectedRecipe = filterRecipeModel[indexPath.row]
+            present(DetailViewController(), animated: true, completion: nil)
+            
+        } else {
+            
+            RecipeManager.shared.selectedRecipe = recipeModel[indexPath.row]
+            
+            present(DetailViewController(), animated: true, completion: nil)
+        }
+        
+       
         
         
     }
@@ -169,11 +188,11 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         print("clicked")
         
         if sortRecipeInTableView {
-            recipeModel?.hits?.sort() { ($0.recipe?.label)! < ($1.recipe?.label)! }
+            recipeModel.sort() { ($0.label)! < ($1.label)! }
             sortRecipeInTableView = false
             tableView.reloadData()
         } else {
-            recipeModel?.hits?.sort() { ($0.recipe?.label)! > ($1.recipe?.label)! }
+            recipeModel.sort() { ($0.label)! > ($1.label)! }
             sortRecipeInTableView = true
             tableView.reloadData()
         }
@@ -185,40 +204,22 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 30
     }
-    
-    
 }
 
 
 
 
 extension ViewController: UISearchResultsUpdating {
+    
     func updateSearchResults(for searchController: UISearchController) {
         
-        
-        filterRecipeModel?.hits = recipeModel!.hits!.filter{
-            $0.recipe!.label!.contains(searchController.searchBar.text!)
+        filterRecipeModel = recipeModel.filter {
             
+            $0.label!.contains(searchController.searchBar.text!)
         }
-        
-        print(searchController.searchBar.text!)
-        print(filterRecipeModel?.hits ?? nil)
-//        print(recipeModel?.hits![0].recipe!.label!)
+ 
+//        print(recipeModel[0].label)
+//        print(filterRecipeModel[0].label)
         tableView.reloadData()
-        
     }
-    
-    
-    
 }
-
-
-
-
-
-
-
-
-
-
-

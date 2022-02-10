@@ -20,6 +20,10 @@
 		A024862A27B3B84B000A9D8A /* VanekExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = A024862927B3B84B000A9D8A /* VanekExample.swift */; };
 		A024862E27B3D646000A9D8A /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A024862D27B3D646000A9D8A /* TableViewCell.swift */; };
 		A024863127B417C9000A9D8A /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = A024863027B417C9000A9D8A /* SDWebImage */; };
+		A024863327B517C7000A9D8A /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A024863227B517C7000A9D8A /* DetailViewController.swift */; };
+		A024863727B518AE000A9D8A /* Mission_text.rtf in Resources */ = {isa = PBXBuildFile; fileRef = A024863627B518AE000A9D8A /* Mission_text.rtf */; };
+		A024863927B5205A000A9D8A /* RecipeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A024863827B5205A000A9D8A /* RecipeManager.swift */; };
+		A024863C27B57291000A9D8A /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A024863B27B57291000A9D8A /* CollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +60,10 @@
 		A01FF0532799E638004B0AEF /* RecipeSearchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeSearchModel.swift; sourceTree = "<group>"; };
 		A024862927B3B84B000A9D8A /* VanekExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VanekExample.swift; sourceTree = "<group>"; };
 		A024862D27B3D646000A9D8A /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
+		A024863227B517C7000A9D8A /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		A024863627B518AE000A9D8A /* Mission_text.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Mission_text.rtf; sourceTree = SOURCE_ROOT; };
+		A024863827B5205A000A9D8A /* RecipeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeManager.swift; sourceTree = "<group>"; };
+		A024863B27B57291000A9D8A /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,7 +117,8 @@
 			children = (
 				A01FF0212799CE9B004B0AEF /* AppDelegate.swift */,
 				A01FF0232799CE9B004B0AEF /* SceneDelegate.swift */,
-				A01FF0252799CE9B004B0AEF /* ViewController.swift */,
+				A024863A27B53CA5000A9D8A /* Controllers */,
+				A024863827B5205A000A9D8A /* RecipeManager.swift */,
 				A024862D27B3D646000A9D8A /* TableViewCell.swift */,
 				A01FF0532799E638004B0AEF /* RecipeSearchModel.swift */,
 				A024862927B3B84B000A9D8A /* VanekExample.swift */,
@@ -117,6 +126,7 @@
 				A01FF02A2799CE9F004B0AEF /* Assets.xcassets */,
 				A01FF02C2799CE9F004B0AEF /* LaunchScreen.storyboard */,
 				A01FF02F2799CE9F004B0AEF /* Info.plist */,
+				A024863627B518AE000A9D8A /* Mission_text.rtf */,
 			);
 			path = RecipeHelper;
 			sourceTree = "<group>";
@@ -136,6 +146,16 @@
 				A01FF0442799CE9F004B0AEF /* RecipeHelperUITestsLaunchTests.swift */,
 			);
 			path = RecipeHelperUITests;
+			sourceTree = "<group>";
+		};
+		A024863A27B53CA5000A9D8A /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				A01FF0252799CE9B004B0AEF /* ViewController.swift */,
+				A024863227B517C7000A9D8A /* DetailViewController.swift */,
+				A024863B27B57291000A9D8A /* CollectionViewCell.swift */,
+			);
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -249,6 +269,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A01FF02E2799CE9F004B0AEF /* LaunchScreen.storyboard in Resources */,
+				A024863727B518AE000A9D8A /* Mission_text.rtf in Resources */,
 				A01FF02B2799CE9F004B0AEF /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -274,13 +295,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A024863C27B57291000A9D8A /* CollectionViewCell.swift in Sources */,
 				A024862A27B3B84B000A9D8A /* VanekExample.swift in Sources */,
 				A024862E27B3D646000A9D8A /* TableViewCell.swift in Sources */,
 				A01FF0262799CE9B004B0AEF /* ViewController.swift in Sources */,
+				A024863927B5205A000A9D8A /* RecipeManager.swift in Sources */,
 				A01FF0222799CE9B004B0AEF /* AppDelegate.swift in Sources */,
 				A01FF0542799E638004B0AEF /* RecipeSearchModel.swift in Sources */,
 				A01FF0242799CE9B004B0AEF /* SceneDelegate.swift in Sources */,
 				A01FF0522799CEC9004B0AEF /* Networking.swift in Sources */,
+				A024863327B517C7000A9D8A /* DetailViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
