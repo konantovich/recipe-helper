@@ -31,6 +31,18 @@ class ViewController: UIViewController {
         return searchController.isActive && !searchBarIsEmpty
     }
     
+    lazy var loadingLabel : UILabel = {
+        let label = UILabel()
+        label.text = " Loading... "
+        label.frame = CGRect(x: view.center.x - 60, y: view.center.y - 60, width: 120, height: 120)
+        label.textAlignment = .center
+        label.font = UIFont(name: label.font.fontName, size: 23)
+        label.numberOfLines = 1
+        //…
+      //  label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -40,7 +52,7 @@ class ViewController: UIViewController {
         
         tableView.backgroundColor = .none
         setupTableView()
-        
+        view.addSubview(loadingLabel)
         
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 1.5, repeats: false, block: { (_) in
@@ -60,6 +72,8 @@ class ViewController: UIViewController {
 //                print(self?.recipeModel?.hits?[0].recipe?.label)
                 // print(self?.recipeModel?.hits?.first.recipe?.label)
                 self?.tableView.reloadData()
+                self?.loadingLabel.text = ""
+                
                 
             }
             

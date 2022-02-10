@@ -21,7 +21,6 @@
 		A024862E27B3D646000A9D8A /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A024862D27B3D646000A9D8A /* TableViewCell.swift */; };
 		A024863127B417C9000A9D8A /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = A024863027B417C9000A9D8A /* SDWebImage */; };
 		A024863327B517C7000A9D8A /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A024863227B517C7000A9D8A /* DetailViewController.swift */; };
-		A024863727B518AE000A9D8A /* Mission_text.rtf in Resources */ = {isa = PBXBuildFile; fileRef = A024863627B518AE000A9D8A /* Mission_text.rtf */; };
 		A024863927B5205A000A9D8A /* RecipeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A024863827B5205A000A9D8A /* RecipeManager.swift */; };
 		A024863C27B57291000A9D8A /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A024863B27B57291000A9D8A /* CollectionViewCell.swift */; };
 		A024864127B5C302000A9D8A /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A024864027B5C302000A9D8A /* GradientView.swift */; };
@@ -63,7 +62,6 @@
 		A024862927B3B84B000A9D8A /* VanekExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VanekExample.swift; sourceTree = "<group>"; };
 		A024862D27B3D646000A9D8A /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		A024863227B517C7000A9D8A /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
-		A024863627B518AE000A9D8A /* Mission_text.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Mission_text.rtf; sourceTree = SOURCE_ROOT; };
 		A024863827B5205A000A9D8A /* RecipeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeManager.swift; sourceTree = "<group>"; };
 		A024863B27B57291000A9D8A /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		A024864027B5C302000A9D8A /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
@@ -119,18 +117,12 @@
 		A01FF0202799CE9B004B0AEF /* RecipeHelper */ = {
 			isa = PBXGroup;
 			children = (
-				A01FF0212799CE9B004B0AEF /* AppDelegate.swift */,
-				A01FF0232799CE9B004B0AEF /* SceneDelegate.swift */,
+				A024864527B5D760000A9D8A /* Other */,
 				A024863A27B53CA5000A9D8A /* Controllers */,
 				A024863827B5205A000A9D8A /* RecipeManager.swift */,
-				A01FF0532799E638004B0AEF /* RecipeSearchModel.swift */,
 				A024863F27B5C2E7000A9D8A /* GradientColor */,
-				A024862927B3B84B000A9D8A /* VanekExample.swift */,
-				A01FF0512799CEC9004B0AEF /* Networking.swift */,
-				A01FF02A2799CE9F004B0AEF /* Assets.xcassets */,
-				A01FF02C2799CE9F004B0AEF /* LaunchScreen.storyboard */,
+				A024864427B5D718000A9D8A /* Model+Networking */,
 				A01FF02F2799CE9F004B0AEF /* Info.plist */,
-				A024863627B518AE000A9D8A /* Mission_text.rtf */,
 			);
 			path = RecipeHelper;
 			sourceTree = "<group>";
@@ -170,6 +162,27 @@
 				A024864227B5C3DB000A9D8A /* UIView+extension.swift */,
 			);
 			path = GradientColor;
+			sourceTree = "<group>";
+		};
+		A024864427B5D718000A9D8A /* Model+Networking */ = {
+			isa = PBXGroup;
+			children = (
+				A01FF0532799E638004B0AEF /* RecipeSearchModel.swift */,
+				A01FF0512799CEC9004B0AEF /* Networking.swift */,
+				A024862927B3B84B000A9D8A /* VanekExample.swift */,
+			);
+			path = "Model+Networking";
+			sourceTree = "<group>";
+		};
+		A024864527B5D760000A9D8A /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				A01FF0212799CE9B004B0AEF /* AppDelegate.swift */,
+				A01FF0232799CE9B004B0AEF /* SceneDelegate.swift */,
+				A01FF02A2799CE9F004B0AEF /* Assets.xcassets */,
+				A01FF02C2799CE9F004B0AEF /* LaunchScreen.storyboard */,
+			);
+			path = Other;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -283,7 +296,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				A01FF02E2799CE9F004B0AEF /* LaunchScreen.storyboard in Resources */,
-				A024863727B518AE000A9D8A /* Mission_text.rtf in Resources */,
 				A01FF02B2799CE9F004B0AEF /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -91,6 +91,7 @@ class DetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         view.applyGradients(cornerRadius: 0, startColor: #colorLiteral(red: 0.5568627715, green: 0.3529411852, blue: 0.9686274529, alpha: 1), endColor: #colorLiteral(red: 0.9411764741, green: 0.4980392158, blue: 0.3529411852, alpha: 1))
         
         
@@ -209,7 +210,7 @@ class DetailViewController: UIViewController {
         ])
         NSLayoutConstraint.activate([
             
-            recipeDescription.topAnchor.constraint(equalTo: recipeLabel.bottomAnchor, constant: 40),
+            recipeDescription.topAnchor.constraint(equalTo: recipeLabel.bottomAnchor, constant: 30),
             recipeDescription.leadingAnchor.constraint(equalTo: viewForCollectionView.leadingAnchor, constant: 0),
             recipeDescription.heightAnchor.constraint(equalToConstant: 80),
             recipeDescription.widthAnchor.constraint(equalToConstant: view.center.x + 80),
@@ -219,7 +220,7 @@ class DetailViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             
-            instructionDescription.topAnchor.constraint(equalTo: recipeDescription.bottomAnchor, constant: 40),
+            instructionDescription.topAnchor.constraint(equalTo: recipeDescription.bottomAnchor, constant: 10),
             instructionDescription.leadingAnchor.constraint(equalTo: viewForCollectionView.leadingAnchor, constant: 0),
             instructionDescription.heightAnchor.constraint(equalToConstant: 40),
             instructionDescription.widthAnchor.constraint(equalToConstant: view.center.x + 80),
@@ -234,7 +235,7 @@ class DetailViewController: UIViewController {
         ])
         
         NSLayoutConstraint.activate([
-            viewForCollectionView.topAnchor.constraint(equalTo: instructionDescription.bottomAnchor, constant: 40),
+            viewForCollectionView.topAnchor.constraint(equalTo: instructionDescription.bottomAnchor, constant: 80),
             viewForCollectionView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             viewForCollectionView.heightAnchor.constraint(equalToConstant: 100),
             viewForCollectionView.widthAnchor.constraint(equalToConstant: view.center.x + 150),
