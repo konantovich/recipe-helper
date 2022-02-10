@@ -10,12 +10,16 @@
 		A01FF0222799CE9B004B0AEF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01FF0212799CE9B004B0AEF /* AppDelegate.swift */; };
 		A01FF0242799CE9B004B0AEF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01FF0232799CE9B004B0AEF /* SceneDelegate.swift */; };
 		A01FF0262799CE9B004B0AEF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01FF0252799CE9B004B0AEF /* ViewController.swift */; };
-		A01FF0292799CE9B004B0AEF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A01FF0272799CE9B004B0AEF /* Main.storyboard */; };
 		A01FF02B2799CE9F004B0AEF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A01FF02A2799CE9F004B0AEF /* Assets.xcassets */; };
 		A01FF02E2799CE9F004B0AEF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A01FF02C2799CE9F004B0AEF /* LaunchScreen.storyboard */; };
 		A01FF0392799CE9F004B0AEF /* RecipeHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01FF0382799CE9F004B0AEF /* RecipeHelperTests.swift */; };
 		A01FF0432799CE9F004B0AEF /* RecipeHelperUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01FF0422799CE9F004B0AEF /* RecipeHelperUITests.swift */; };
 		A01FF0452799CE9F004B0AEF /* RecipeHelperUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01FF0442799CE9F004B0AEF /* RecipeHelperUITestsLaunchTests.swift */; };
+		A01FF0522799CEC9004B0AEF /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01FF0512799CEC9004B0AEF /* Networking.swift */; };
+		A01FF0542799E638004B0AEF /* RecipeSearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01FF0532799E638004B0AEF /* RecipeSearchModel.swift */; };
+		A024862A27B3B84B000A9D8A /* VanekExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = A024862927B3B84B000A9D8A /* VanekExample.swift */; };
+		A024862E27B3D646000A9D8A /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A024862D27B3D646000A9D8A /* TableViewCell.swift */; };
+		A024863127B417C9000A9D8A /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = A024863027B417C9000A9D8A /* SDWebImage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,7 +44,6 @@
 		A01FF0212799CE9B004B0AEF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A01FF0232799CE9B004B0AEF /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		A01FF0252799CE9B004B0AEF /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		A01FF0282799CE9B004B0AEF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A01FF02A2799CE9F004B0AEF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A01FF02D2799CE9F004B0AEF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A01FF02F2799CE9F004B0AEF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -49,6 +52,10 @@
 		A01FF03E2799CE9F004B0AEF /* RecipeHelperUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RecipeHelperUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A01FF0422799CE9F004B0AEF /* RecipeHelperUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeHelperUITests.swift; sourceTree = "<group>"; };
 		A01FF0442799CE9F004B0AEF /* RecipeHelperUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeHelperUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		A01FF0512799CEC9004B0AEF /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
+		A01FF0532799E638004B0AEF /* RecipeSearchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeSearchModel.swift; sourceTree = "<group>"; };
+		A024862927B3B84B000A9D8A /* VanekExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VanekExample.swift; sourceTree = "<group>"; };
+		A024862D27B3D646000A9D8A /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +63,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A024863127B417C9000A9D8A /* SDWebImage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,7 +110,10 @@
 				A01FF0212799CE9B004B0AEF /* AppDelegate.swift */,
 				A01FF0232799CE9B004B0AEF /* SceneDelegate.swift */,
 				A01FF0252799CE9B004B0AEF /* ViewController.swift */,
-				A01FF0272799CE9B004B0AEF /* Main.storyboard */,
+				A024862D27B3D646000A9D8A /* TableViewCell.swift */,
+				A01FF0532799E638004B0AEF /* RecipeSearchModel.swift */,
+				A024862927B3B84B000A9D8A /* VanekExample.swift */,
+				A01FF0512799CEC9004B0AEF /* Networking.swift */,
 				A01FF02A2799CE9F004B0AEF /* Assets.xcassets */,
 				A01FF02C2799CE9F004B0AEF /* LaunchScreen.storyboard */,
 				A01FF02F2799CE9F004B0AEF /* Info.plist */,
@@ -143,6 +154,9 @@
 			dependencies = (
 			);
 			name = RecipeHelper;
+			packageProductDependencies = (
+				A024863027B417C9000A9D8A /* SDWebImage */,
+			);
 			productName = RecipeHelper;
 			productReference = A01FF01E2799CE9B004B0AEF /* RecipeHelper.app */;
 			productType = "com.apple.product-type.application";
@@ -215,6 +229,9 @@
 				Base,
 			);
 			mainGroup = A01FF0152799CE9B004B0AEF;
+			packageReferences = (
+				A024862F27B417C9000A9D8A /* XCRemoteSwiftPackageReference "SDWebImage" */,
+			);
 			productRefGroup = A01FF01F2799CE9B004B0AEF /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -233,7 +250,6 @@
 			files = (
 				A01FF02E2799CE9F004B0AEF /* LaunchScreen.storyboard in Resources */,
 				A01FF02B2799CE9F004B0AEF /* Assets.xcassets in Resources */,
-				A01FF0292799CE9B004B0AEF /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -258,9 +274,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A024862A27B3B84B000A9D8A /* VanekExample.swift in Sources */,
+				A024862E27B3D646000A9D8A /* TableViewCell.swift in Sources */,
 				A01FF0262799CE9B004B0AEF /* ViewController.swift in Sources */,
 				A01FF0222799CE9B004B0AEF /* AppDelegate.swift in Sources */,
+				A01FF0542799E638004B0AEF /* RecipeSearchModel.swift in Sources */,
 				A01FF0242799CE9B004B0AEF /* SceneDelegate.swift in Sources */,
+				A01FF0522799CEC9004B0AEF /* Networking.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -297,14 +317,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		A01FF0272799CE9B004B0AEF /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A01FF0282799CE9B004B0AEF /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		A01FF02C2799CE9F004B0AEF /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -444,7 +456,6 @@
 				INFOPLIST_FILE = RecipeHelper/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -472,7 +483,6 @@
 				INFOPLIST_FILE = RecipeHelper/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -604,6 +614,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A024862F27B417C9000A9D8A /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImage";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A024863027B417C9000A9D8A /* SDWebImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A024862F27B417C9000A9D8A /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A01FF0162799CE9B004B0AEF /* Project object */;
 }
