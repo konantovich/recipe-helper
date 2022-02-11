@@ -24,28 +24,28 @@ class DetailViewController: UIViewController {
         return view
     }()
     
-//
-//    lazy var photoRecipe: UIImageView = {
-//        let imgView = UIImageView()
-//        imgView.image = UIImage(systemName: "square.and.arrow.up")
-//        imgView.contentMode = .scaleAspectFit
-//        imgView.layer.cornerRadius = 10
-//        imgView.layer.masksToBounds = true
-//        imgView.translatesAutoresizingMaskIntoConstraints = false
-//        return imgView
-//    }()
+    //
+    //    lazy var photoRecipe: UIImageView = {
+    //        let imgView = UIImageView()
+    //        imgView.image = UIImage(systemName: "square.and.arrow.up")
+    //        imgView.contentMode = .scaleAspectFit
+    //        imgView.layer.cornerRadius = 10
+    //        imgView.layer.masksToBounds = true
+    //        imgView.translatesAutoresizingMaskIntoConstraints = false
+    //        return imgView
+    //    }()
     
     let scrollView: UIScrollView = {
         let scroll = UIScrollView()
         scroll.isPagingEnabled = true
         scroll.showsVerticalScrollIndicator = false
         scroll.showsHorizontalScrollIndicator = false
-        scroll.contentMode = .scaleToFill
-       // scroll.bounces = true
-       // scroll.isDirectionalLockEnabled = true
-      //  scroll.horizontalScrollIndicatorInsets = UIEdgeInsets.init(top: 0, left: 10, bottom: 0, right: 10)
+       
+        // scroll.bounces = true
+        // scroll.isDirectionalLockEnabled = true
+        //  scroll.horizontalScrollIndicatorInsets = UIEdgeInsets.init(top: 0, left: 10, bottom: 0, right: 10)
         // scroll.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-       // scroll.backgroundColor = .red
+        // scroll.backgroundColor = .red
         scroll.translatesAutoresizingMaskIntoConstraints = false
         return scroll
     }()
@@ -119,7 +119,7 @@ class DetailViewController: UIViewController {
         
         //        swipeTappedOnPhotoRecipe ()
         
-      
+        
         
         
         // view.backgroundColor = .white
@@ -143,7 +143,7 @@ class DetailViewController: UIViewController {
         
         guard let recipe = selectedRecipeModel else {return}
         
-     //   self.photoRecipe.sd_setImage(with: URL(string: recipe.image ?? ""), completed: nil)
+        //   self.photoRecipe.sd_setImage(with: URL(string: recipe.image ?? ""), completed: nil)
         self.recipeLabel.text = recipe.label
         self.recipeDescription.text = recipe.ingredientLines?.joined(separator: ", ")
         self.instructionDescription.text = "See a full recipe: \(URL(string: recipe.url ?? "")!)"
@@ -158,33 +158,40 @@ class DetailViewController: UIViewController {
         
         let stackView = UIStackView()
         stackView.axis = .horizontal
-        stackView.distribution = .fillEqually
-       // stackView.spacing = 10
-        stackView.backgroundColor = .green
+        stackView.distribution = .fillProportionally
+        // stackView.spacing = 10
+       // stackView.backgroundColor = .green
         stackView.translatesAutoresizingMaskIntoConstraints = false
         
-       // stackView.frame = CGRect(x: 0, y: 0, width: 400, height: 400)
+        // stackView.frame = CGRect(x: 0, y: 0, width: 400, height: 400)
+        scrollView.addSubview(stackView)
         
         let imagesFromUrl = [selectedRecipeModel?.images?.large?.url ?? "", selectedRecipeModel?.images?.regular?.url ?? "", selectedRecipeModel?.images?.small?.url ?? ""]
         
         for i in 0..<imagesFromUrl.count {
             let imagesForSwipe = RecipeManager.shared.getImageFromUrl(urlString: imagesFromUrl)
             let imageView = imagesForSwipe[i]
-            imageView.backgroundColor = .red
+            //imageView.backgroundColor = .red
             
-           // imageView.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
-            imageView.contentMode = .scaleToFill
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+            imageView.clipsToBounds = true
+            
+            // imageView.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
+            imageView.contentMode = .scaleAspectFill
             
             //add image on stackview
             stackView.insertArrangedSubview(imageView, at: i)
+            
+      
+            imageView.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
         }
         
-        scrollView.addSubview(stackView)
+     
         NSLayoutConstraint.activate([
-        stackView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
-        stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: 0),
-        stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 0),
-        stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
+            stackView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
+            stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: 0),
+            stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 0),
+            stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
         ])
     }
     
@@ -256,11 +263,11 @@ class DetailViewController: UIViewController {
     private func setupConstraint () {
         
         
-      
+        
         
         NSLayoutConstraint.activate([
-
-
+            
+            
             scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
@@ -305,7 +312,7 @@ class DetailViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             viewForCollectionView.topAnchor.constraint(equalTo: instructionDescription.bottomAnchor, constant: 20),
-          
+            
             viewForCollectionView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             viewForCollectionView.heightAnchor.constraint(equalToConstant: 100),
             viewForCollectionView.widthAnchor.constraint(equalToConstant: view.center.x + 150),

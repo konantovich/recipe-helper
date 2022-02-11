@@ -22,14 +22,26 @@ class ViewController: UIViewController {
     
     //когда обращаемся к searchBar, если текст уже введен то переменная будет меняется, если нет то просто выходим и false
     var searchBarIsEmpty: Bool {
+  
         guard let text = searchController.searchBar.text else { return false }
         return text.isEmpty
     }
     
     //когда произошла фильтрация по имени или же нет
     var isFiltering: Bool {
-        return searchController.isActive && !searchBarIsEmpty
+        if isApiModeEnable == false {
+            return false
+        } else {
+            return searchController.isActive && !searchBarIsEmpty
+        }
+
+       
     }
+    
+    var isApiModeEnable: Bool = true
+    
+  //  var searchText = "Apple"
+ 
     
     lazy var loadingLabel : UILabel = {
         let label = UILabel()
@@ -55,9 +67,22 @@ class ViewController: UIViewController {
         setupTableView()
         view.addSubview(loadingLabel)
         
+       requestSearchData(searchText: "Apple")
+        
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.register(MyCustomCell.self, forCellReuseIdentifier: "cell")
+        
+        setupSearchBar()
+        
+        
+    }
+    
+    func requestSearchData (searchText: String) {
+        
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 1.5, repeats: false, block: { (_) in
-            NetworkService.shared.fetchEdamamRecipes(search: "apple") { [weak self] recipe in
+            NetworkService.shared.fetchEdamamRecipes(search: searchText) { [weak self] recipe in
                 
                 guard let recipe = recipe,
                       let hits = recipe.hits,
@@ -67,7 +92,7 @@ class ViewController: UIViewController {
                           return
                       }
                 
-                self?.recipeModel = (recipe.hits?.compactMap { $0.recipe }) ?? []
+                self?.recipeModel = (recipe.hits?.prefix(10).compactMap { $0.recipe }) ?? []
                 
 //                print(recipe.hits?[0].recipe?.label)
 //                print(self?.recipeModel?.hits?[0].recipe?.label)
@@ -79,12 +104,6 @@ class ViewController: UIViewController {
             }
             
         })
-        
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.register(MyCustomCell.self, forCellReuseIdentifier: "cell")
-        
-        setupSearchBar()
         
         
     }
@@ -117,6 +136,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
+      
         
         if isFiltering {
             return filterRecipeModel.prefix(10).count
@@ -137,8 +157,6 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             
             if isFiltering {
                 let recipe = filterRecipeModel.prefix(10)[indexPath.row]
-                
-                
                 
                 cell.recipeLabel.text = recipe.label
                 cell.recipeDescription.text = recipe.ingredientLines?.joined(separator: ", ")
@@ -168,6 +186,8 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print(indexPath)
+        
+        
         
         if isFiltering {
             
@@ -200,22 +220,48 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
-        let header = UIView(frame:  CGRect(x: 0,y: 0,width: view.frame.width,height: 30))
-        //header.backgroundColor = .red
-        let button = UIButton(frame: CGRect(x: 0, y: 0, width: Int(header.frame.width), height: Int(header.frame.height)))
-        button.setTitle("Sorted by name:", for: .normal)
+        let header = UIView(frame:  CGRect(x: 0,y: 0,width: view.frame.width, height: 30))
+       // header.backgroundColor = .gray
         
+        let button = UIButton(frame: CGRect(x: 10 , y: 0, width: 175, height: 30))
+        
+        let apiModeButton = UIButton(frame: CGRect(x: Int(view.frame.width) - 150 , y: 0, width: 125 , height: 30))
+        
+       // apiModeButton.backgroundColor = .red
+        apiModeButton.setTitle("API Mode", for: .normal)
+        apiModeButton.setTitleColor( .orange, for: .normal)
+        apiModeButton.addTarget(self, action:  #selector(apiModeButtonAction), for: .touchUpInside)
+        
+        button.setTitle("Sorted by name:", for: .normal)
         button.setTitleColor(.systemPink, for: .normal)
         button.addTarget(self, action:  #selector(sortedButtonAction), for: .touchUpInside)
         header.addSubview(button)
+        header.addSubview(apiModeButton)
         
         
         return header
         
     }
     
+    @objc func apiModeButtonAction () {
+        print("apiModeButtonAction clicked")
+        
+        if isApiModeEnable {
+            
+            print("apiMode Enable")
+            isApiModeEnable = false
+            tableView.reloadData()
+        } else {
+            
+            print("apiMode Disable")
+            isApiModeEnable = true
+            tableView.reloadData()
+        }
+        
+    }
+    
     @objc func sortedButtonAction() {
-        print("clicked")
+        print("sortedButtonAction clicked")
         
         if sortRecipeInTableView {
             recipeModel.sort() { ($0.label)! < ($1.label)! }
@@ -226,9 +272,6 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             sortRecipeInTableView = true
             tableView.reloadData()
         }
-        
-        
-        
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -243,13 +286,22 @@ extension ViewController: UISearchResultsUpdating {
     
     func updateSearchResults(for searchController: UISearchController) {
         
-        filterRecipeModel = recipeModel.filter {
+        print(searchController.searchBar.text ?? "")
+        
+        if isApiModeEnable {
             
-            $0.label!.contains(searchController.searchBar.text!)
-        }
- 
-//        print(recipeModel[0].label)
-//        print(filterRecipeModel[0].label)
-        tableView.reloadData()
+            filterRecipeModel = recipeModel.filter {
+                
+                $0.label!.contains(searchController.searchBar.text!)
+            }
+            tableView.reloadData()
+        } else {
+            
+           requestSearchData(searchText: searchController.searchBar.text!)
+            
+            
+           // tableView.reloadData()
+        
     }
+}
 }
