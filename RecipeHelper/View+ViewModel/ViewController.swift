@@ -43,6 +43,7 @@ class ViewController: UIViewController {
         return label
     }()
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -203,6 +204,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         //header.backgroundColor = .red
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: Int(header.frame.width), height: Int(header.frame.height)))
         button.setTitle("Sorted by name:", for: .normal)
+        
         button.setTitleColor(.systemPink, for: .normal)
         button.addTarget(self, action:  #selector(sortedButtonAction), for: .touchUpInside)
         header.addSubview(button)

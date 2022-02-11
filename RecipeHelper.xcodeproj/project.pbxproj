@@ -98,6 +98,8 @@
 			isa = PBXGroup;
 			children = (
 				A01FF0202799CE9B004B0AEF /* RecipeHelper */,
+				A024863F27B5C2E7000A9D8A /* GradientColor */,
+				A024864527B5D760000A9D8A /* Other */,
 				A01FF0372799CE9F004B0AEF /* RecipeHelperTests */,
 				A01FF0412799CE9F004B0AEF /* RecipeHelperUITests */,
 				A01FF01F2799CE9B004B0AEF /* Products */,
@@ -117,10 +119,8 @@
 		A01FF0202799CE9B004B0AEF /* RecipeHelper */ = {
 			isa = PBXGroup;
 			children = (
-				A024864527B5D760000A9D8A /* Other */,
-				A024863A27B53CA5000A9D8A /* Controllers */,
+				A024863A27B53CA5000A9D8A /* View+ViewModel */,
 				A024863827B5205A000A9D8A /* RecipeManager.swift */,
-				A024863F27B5C2E7000A9D8A /* GradientColor */,
 				A024864427B5D718000A9D8A /* Model+Networking */,
 				A01FF02F2799CE9F004B0AEF /* Info.plist */,
 			);
@@ -144,7 +144,7 @@
 			path = RecipeHelperUITests;
 			sourceTree = "<group>";
 		};
-		A024863A27B53CA5000A9D8A /* Controllers */ = {
+		A024863A27B53CA5000A9D8A /* View+ViewModel */ = {
 			isa = PBXGroup;
 			children = (
 				A01FF0252799CE9B004B0AEF /* ViewController.swift */,
@@ -152,7 +152,7 @@
 				A024863B27B57291000A9D8A /* CollectionViewCell.swift */,
 				A024862D27B3D646000A9D8A /* TableViewCell.swift */,
 			);
-			path = Controllers;
+			path = "View+ViewModel";
 			sourceTree = "<group>";
 		};
 		A024863F27B5C2E7000A9D8A /* GradientColor */ = {

@@ -17,7 +17,7 @@ class DetailViewController: UIViewController {
     var tryAlso: [Recipe]?
     
     var collectionView: UICollectionView!
-   // var collectionViewData = [UIColor.red, UIColor.green, UIColor.blue]
+    // var collectionViewData = [UIColor.red, UIColor.green, UIColor.blue]
     var viewForCollectionView : UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -35,12 +35,25 @@ class DetailViewController: UIViewController {
         return imgView
     }()
     
+    let scrollView: UIScrollView = {
+        let scroll = UIScrollView()
+        scroll.isPagingEnabled = true
+        scroll.showsVerticalScrollIndicator = false
+        scroll.showsHorizontalScrollIndicator = false
+       // scroll.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+        scroll.backgroundColor = .red
+        scroll.translatesAutoresizingMaskIntoConstraints = false
+        return scroll
+    }()
+    
+    
+    
     lazy var recipeLabel : UILabel = {
         let label = UILabel()
         label.text = " Label recipe "
         label.textAlignment = .left
-        label.font = UIFont(name: label.font.fontName, size: 23)
-        label.numberOfLines = 1
+        label.font = UIFont(name: label.font.fontName, size: 20)
+        label.numberOfLines = 2
         //…
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -100,8 +113,27 @@ class DetailViewController: UIViewController {
         tryAlso = RecipeManager.shared.tryAlso
         
         
+//        swipeTappedOnPhotoRecipe ()
+        
+        
+        let imagesFromUrl = [selectedRecipeModel?.images?.large?.url ?? "", selectedRecipeModel?.images?.regular?.url ?? "", selectedRecipeModel?.images?.small?.url ?? ""]
 
-       // view.backgroundColor = .white
+        for i in 0..<imagesFromUrl.count {
+            let imagesForSwipe = RecipeManager.shared.getImageFromUrl(urlString: imagesFromUrl)
+            let imageView = imagesForSwipe[i]
+            
+          //  let xPosition = UIScreen.main.bounds.width * CGFloat(i)
+            imageView.frame = CGRect(x: 0, y: 0, width: scrollView.frame.width, height: scrollView.frame.height)
+             imageView.contentMode = .scaleAspectFit
+
+           // scrollView.contentSize.width = scrollView.frame.width * CGFloat(i + 1)
+             scrollView.addSubview(imageView)
+             scrollView.delegate = self
+        }
+        
+        
+        
+        // view.backgroundColor = .white
         viewForCollectionView.backgroundColor = .none
         
         //        recipeLabel.backgroundColor = .red
@@ -113,10 +145,10 @@ class DetailViewController: UIViewController {
         reloadData()
         setupConstraint()
         
-
+        
         self.collectionView.register(CollectionViewCell.self, forCellWithReuseIdentifier: "cell")
-       
-
+        
+        
         
         
         
@@ -134,21 +166,32 @@ class DetailViewController: UIViewController {
     }
     
     
+//    func swipeTappedOnPhotoRecipe () {
+//        let tap = UITapGestureRecognizer(target: self, action: #selector(self.handlePhotoRecipeTap(_:)))
+//        photoRecipe.addGestureRecognizer(tap)
+//        photoRecipe.isUserInteractionEnabled = true
+//    }
+//
+//    @objc func handlePhotoRecipeTap(_ sender: UITapGestureRecognizer? = nil) {
+//        // handling code
+//        print("tapped on photoRecipe", sender)
+//    }
+    
     private func reloadData () {
         
         
         
-        view.addSubview(photoRecipe)
+        view.addSubview(scrollView)
         view.addSubview(recipeLabel)
         view.addSubview(recipeDescription)
         view.addSubview(instructionDescription)
         view.addSubview(viewForCollectionView)
         view.addSubview(tryAlsoLabel)
-      
+//        photoRecipe.addSubview(scrollView)
         
     }
     
-  
+    
     
     
     private func setupCollectionView () {
@@ -167,7 +210,7 @@ class DetailViewController: UIViewController {
         
         self.collectionView.translatesAutoresizingMaskIntoConstraints = false
         
-       
+        
         
         // set the dataSource
         self.collectionView.dataSource = self
@@ -180,11 +223,11 @@ class DetailViewController: UIViewController {
         
         self.viewForCollectionView = collectionView
         
-      
+        
         
     }
     
-
+    
     
     
     private func setupConstraint () {
@@ -192,15 +235,15 @@ class DetailViewController: UIViewController {
         
         
         NSLayoutConstraint.activate([
-            photoRecipe.topAnchor.constraint(equalTo: view.topAnchor, constant: 60),
-            photoRecipe.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            photoRecipe.widthAnchor.constraint(equalToConstant: 180),
-            photoRecipe.heightAnchor.constraint(equalToConstant: 180)
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 60),
+            scrollView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            scrollView.widthAnchor.constraint(equalToConstant: 180),
+            scrollView.heightAnchor.constraint(equalToConstant: 180)
         ])
         
         NSLayoutConstraint.activate([
             
-            recipeLabel.topAnchor.constraint(equalTo: photoRecipe.bottomAnchor, constant: 40),
+            recipeLabel.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 40),
             recipeLabel.leadingAnchor.constraint(equalTo: viewForCollectionView.leadingAnchor, constant: 0),
             recipeLabel.heightAnchor.constraint(equalToConstant: 50),
             recipeLabel.widthAnchor.constraint(equalToConstant: 300),
@@ -257,14 +300,14 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
         
         // dequeue the standard cell
         if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? CollectionViewCell {
-    //    let data = self.collectionViewData[indexPath.item]
+            //    let data = self.collectionViewData[indexPath.item]
             guard let tryAlso = tryAlso?[indexPath.row] else {
                 fatalError("Unable to dequeue subclassed cell")
             }
             cell.setupCell(recipe: tryAlso )
-           
             
-        return cell
+            
+            return cell
         } else {
             fatalError("Unable to dequeue subclassed cell")
         }
