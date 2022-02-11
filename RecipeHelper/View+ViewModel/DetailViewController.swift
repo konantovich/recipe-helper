@@ -158,7 +158,7 @@ class DetailViewController: UIViewController {
         
         let stackView = UIStackView()
         stackView.axis = .horizontal
-        stackView.distribution = .equalSpacing
+        stackView.distribution = .fillEqually
        // stackView.spacing = 10
         stackView.backgroundColor = .green
         stackView.translatesAutoresizingMaskIntoConstraints = false
