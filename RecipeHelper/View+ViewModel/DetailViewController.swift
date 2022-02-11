@@ -24,24 +24,28 @@ class DetailViewController: UIViewController {
         return view
     }()
     
-    
-    lazy var photoRecipe: UIImageView = {
-        let imgView = UIImageView()
-        imgView.image = UIImage(systemName: "square.and.arrow.up")
-        imgView.contentMode = .scaleAspectFit
-        imgView.layer.cornerRadius = 10
-        imgView.layer.masksToBounds = true
-        imgView.translatesAutoresizingMaskIntoConstraints = false
-        return imgView
-    }()
+//
+//    lazy var photoRecipe: UIImageView = {
+//        let imgView = UIImageView()
+//        imgView.image = UIImage(systemName: "square.and.arrow.up")
+//        imgView.contentMode = .scaleAspectFit
+//        imgView.layer.cornerRadius = 10
+//        imgView.layer.masksToBounds = true
+//        imgView.translatesAutoresizingMaskIntoConstraints = false
+//        return imgView
+//    }()
     
     let scrollView: UIScrollView = {
         let scroll = UIScrollView()
         scroll.isPagingEnabled = true
         scroll.showsVerticalScrollIndicator = false
         scroll.showsHorizontalScrollIndicator = false
-       // scroll.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-        scroll.backgroundColor = .red
+        scroll.contentMode = .scaleToFill
+       // scroll.bounces = true
+       // scroll.isDirectionalLockEnabled = true
+      //  scroll.horizontalScrollIndicatorInsets = UIEdgeInsets.init(top: 0, left: 10, bottom: 0, right: 10)
+        // scroll.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+       // scroll.backgroundColor = .red
         scroll.translatesAutoresizingMaskIntoConstraints = false
         return scroll
     }()
@@ -113,24 +117,9 @@ class DetailViewController: UIViewController {
         tryAlso = RecipeManager.shared.tryAlso
         
         
-//        swipeTappedOnPhotoRecipe ()
+        //        swipeTappedOnPhotoRecipe ()
         
-        
-        let imagesFromUrl = [selectedRecipeModel?.images?.large?.url ?? "", selectedRecipeModel?.images?.regular?.url ?? "", selectedRecipeModel?.images?.small?.url ?? ""]
-
-        for i in 0..<imagesFromUrl.count {
-            let imagesForSwipe = RecipeManager.shared.getImageFromUrl(urlString: imagesFromUrl)
-            let imageView = imagesForSwipe[i]
-            
-          //  let xPosition = UIScreen.main.bounds.width * CGFloat(i)
-            imageView.frame = CGRect(x: 0, y: 0, width: scrollView.frame.width, height: scrollView.frame.height)
-             imageView.contentMode = .scaleAspectFit
-
-           // scrollView.contentSize.width = scrollView.frame.width * CGFloat(i + 1)
-             scrollView.addSubview(imageView)
-             scrollView.delegate = self
-        }
-        
+      
         
         
         // view.backgroundColor = .white
@@ -144,7 +133,7 @@ class DetailViewController: UIViewController {
         
         reloadData()
         setupConstraint()
-        
+        setupScrollView ()
         
         self.collectionView.register(CollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         
@@ -154,7 +143,7 @@ class DetailViewController: UIViewController {
         
         guard let recipe = selectedRecipeModel else {return}
         
-        self.photoRecipe.sd_setImage(with: URL(string: recipe.image ?? ""), completed: nil)
+     //   self.photoRecipe.sd_setImage(with: URL(string: recipe.image ?? ""), completed: nil)
         self.recipeLabel.text = recipe.label
         self.recipeDescription.text = recipe.ingredientLines?.joined(separator: ", ")
         self.instructionDescription.text = "See a full recipe: \(URL(string: recipe.url ?? "")!)"
@@ -165,17 +154,51 @@ class DetailViewController: UIViewController {
         
     }
     
+    private func setupScrollView () {
+        
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.distribution = .equalSpacing
+       // stackView.spacing = 10
+        stackView.backgroundColor = .green
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        
+       // stackView.frame = CGRect(x: 0, y: 0, width: 400, height: 400)
+        
+        let imagesFromUrl = [selectedRecipeModel?.images?.large?.url ?? "", selectedRecipeModel?.images?.regular?.url ?? "", selectedRecipeModel?.images?.small?.url ?? ""]
+        
+        for i in 0..<imagesFromUrl.count {
+            let imagesForSwipe = RecipeManager.shared.getImageFromUrl(urlString: imagesFromUrl)
+            let imageView = imagesForSwipe[i]
+            imageView.backgroundColor = .red
+            
+           // imageView.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
+            imageView.contentMode = .scaleToFill
+            
+            //add image on stackview
+            stackView.insertArrangedSubview(imageView, at: i)
+        }
+        
+        scrollView.addSubview(stackView)
+        NSLayoutConstraint.activate([
+        stackView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
+        stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: 0),
+        stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 0),
+        stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
+        ])
+    }
     
-//    func swipeTappedOnPhotoRecipe () {
-//        let tap = UITapGestureRecognizer(target: self, action: #selector(self.handlePhotoRecipeTap(_:)))
-//        photoRecipe.addGestureRecognizer(tap)
-//        photoRecipe.isUserInteractionEnabled = true
-//    }
-//
-//    @objc func handlePhotoRecipeTap(_ sender: UITapGestureRecognizer? = nil) {
-//        // handling code
-//        print("tapped on photoRecipe", sender)
-//    }
+    
+    //    func swipeTappedOnPhotoRecipe () {
+    //        let tap = UITapGestureRecognizer(target: self, action: #selector(self.handlePhotoRecipeTap(_:)))
+    //        photoRecipe.addGestureRecognizer(tap)
+    //        photoRecipe.isUserInteractionEnabled = true
+    //    }
+    //
+    //    @objc func handlePhotoRecipeTap(_ sender: UITapGestureRecognizer? = nil) {
+    //        // handling code
+    //        print("tapped on photoRecipe", sender)
+    //    }
     
     private func reloadData () {
         
@@ -187,7 +210,7 @@ class DetailViewController: UIViewController {
         view.addSubview(instructionDescription)
         view.addSubview(viewForCollectionView)
         view.addSubview(tryAlsoLabel)
-//        photoRecipe.addSubview(scrollView)
+        //        photoRecipe.addSubview(scrollView)
         
     }
     
@@ -233,17 +256,20 @@ class DetailViewController: UIViewController {
     private func setupConstraint () {
         
         
+      
         
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 60),
-            scrollView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            scrollView.widthAnchor.constraint(equalToConstant: 180),
-            scrollView.heightAnchor.constraint(equalToConstant: 180)
+
+
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            scrollView.heightAnchor.constraint(equalToConstant: 400)
         ])
         
         NSLayoutConstraint.activate([
             
-            recipeLabel.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 40),
+            recipeLabel.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 5),
             recipeLabel.leadingAnchor.constraint(equalTo: viewForCollectionView.leadingAnchor, constant: 0),
             recipeLabel.heightAnchor.constraint(equalToConstant: 50),
             recipeLabel.widthAnchor.constraint(equalToConstant: 300),
@@ -253,7 +279,7 @@ class DetailViewController: UIViewController {
         ])
         NSLayoutConstraint.activate([
             
-            recipeDescription.topAnchor.constraint(equalTo: recipeLabel.bottomAnchor, constant: 30),
+            recipeDescription.topAnchor.constraint(equalTo: recipeLabel.bottomAnchor, constant: 5 ),
             recipeDescription.leadingAnchor.constraint(equalTo: viewForCollectionView.leadingAnchor, constant: 0),
             recipeDescription.heightAnchor.constraint(equalToConstant: 80),
             recipeDescription.widthAnchor.constraint(equalToConstant: view.center.x + 80),
@@ -263,7 +289,7 @@ class DetailViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             
-            instructionDescription.topAnchor.constraint(equalTo: recipeDescription.bottomAnchor, constant: 10),
+            instructionDescription.topAnchor.constraint(equalTo: recipeDescription.bottomAnchor, constant: 2),
             instructionDescription.leadingAnchor.constraint(equalTo: viewForCollectionView.leadingAnchor, constant: 0),
             instructionDescription.heightAnchor.constraint(equalToConstant: 40),
             instructionDescription.widthAnchor.constraint(equalToConstant: view.center.x + 80),
@@ -278,7 +304,8 @@ class DetailViewController: UIViewController {
         ])
         
         NSLayoutConstraint.activate([
-            viewForCollectionView.topAnchor.constraint(equalTo: instructionDescription.bottomAnchor, constant: 80),
+            viewForCollectionView.topAnchor.constraint(equalTo: instructionDescription.bottomAnchor, constant: 20),
+          
             viewForCollectionView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             viewForCollectionView.heightAnchor.constraint(equalToConstant: 100),
             viewForCollectionView.widthAnchor.constraint(equalToConstant: view.center.x + 150),
