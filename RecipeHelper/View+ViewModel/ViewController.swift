@@ -144,9 +144,13 @@ class ViewController: UIViewController {
         
         view.addSubview(viewForTableView)
         viewForTableView.addSubview(tableView)
-        tableView.addSubview(closeTableView)
+        viewForTableView.addSubview(closeTableView)
        
       //  view.insertSubview(tableView, belowSubview: closeTableView)
+        
+        maximizedTopAnchorForConstraint = viewForTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0)
+        minimizedTopAnchorForConstraint = viewForTableView.topAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
+        bottomAnchorConstraint = viewForTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: view.frame.height)
         
         NSLayoutConstraint.activate([
            // viewForTableView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -155,19 +159,15 @@ class ViewController: UIViewController {
             viewForTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         
-        maximizedTopAnchorForConstraint = viewForTableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0)
-        minimizedTopAnchorForConstraint = viewForTableView.topAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
-        
-        bottomAnchorConstraint = viewForTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: view.frame.height)
         
         maximizedTopAnchorForConstraint.isActive = true
         minimizedTopAnchorForConstraint.isActive = false
-        bottomAnchorConstraint.isActive = false
+        bottomAnchorConstraint.isActive = true
      
        
         
         
-        tableView.topAnchor.constraint(equalTo: viewForTableView.topAnchor, constant: 15).isActive = true
+        tableView.topAnchor.constraint(equalTo: closeTableView.bottomAnchor, constant: 0).isActive = true
         tableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         tableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
@@ -175,8 +175,8 @@ class ViewController: UIViewController {
        
         NSLayoutConstraint.activate([
         closeTableView.heightAnchor.constraint(equalToConstant: 15),
-        closeTableView.widthAnchor.constraint(equalToConstant: 375),
-        closeTableView.bottomAnchor.constraint(equalTo: tableView.topAnchor,constant: 20),
+        closeTableView.widthAnchor.constraint(equalToConstant: view.frame.width),
+        closeTableView.topAnchor.constraint(equalTo: viewForTableView.topAnchor),
         
         ])
     }
@@ -373,11 +373,17 @@ extension ViewController {
     func dissmisTableViewGesture () {
         
         
-        closeTableView.backgroundColor = .red
+        closeTableView.backgroundColor = .lightGray
+        let image = UIImage(systemName: "square.and.arrow.down")?.withTintColor(.gray, renderingMode: .alwaysOriginal)
+        let imageView = UIImageView(image: image!)
+        imageView.frame = CGRect(x: (375 - 130) / 2 , y: 0, width: 130, height: 10)
+      
+        closeTableView.addSubview(imageView)
+       
+        
        // closeTableView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapMinMax)))//работает по касанию
         closeTableView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handlePan)))
-      //  closeTableView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handleDissmisPan)))//работает когда водим пальцем
-        
+      
      
        
     }
@@ -396,7 +402,7 @@ extension ViewController {
     
     
     @objc func handlePan (gesture: UIPanGestureRecognizer) {
-        print("Tapping")
+        //print("Tapping")
         
         switch gesture.state { //.state состояние
         case .began:
@@ -405,7 +411,7 @@ extension ViewController {
            // handleDissmisPan (gesture: gesture)
             
         case .changed:
-            print("тянем координаты \(gesture.translation(in: self.viewForTableView))")
+            //print("тянем координаты \(gesture.translation(in: self.viewForTableView))")
             
             handlePanChange (gesture: gesture)
             
@@ -419,45 +425,23 @@ extension ViewController {
         }
         
     }
-    @objc func handleDissmisPan (gesture: UIPanGestureRecognizer) {
-        print("Tapped Dissmis")
-        
-        
-        //get coordinate and speed gesture
-        let translation = gesture.translation(in: self.viewForTableView)
-        let speed = gesture.velocity(in: self.viewForTableView)//получам/фиксируем скорость
-        
-        //логика что бы наш контроллер двигался за движением пальца (либо на верх либо вниз, по Y)
-        viewForTableView.transform = CGAffineTransform(translationX: 0, y: translation.y)
-        
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
-            self.viewForTableView.transform = .identity //изначальное состояние (иначе все будет съезжать)
-            if translation.y < -200 || speed.y < -500 { //если подняли мини плеер выше 200 поинтов от начального состояния и если скорость выше чем -500
-                self.maximizeTableView()
-            } else {
-                self.minimizeTableView()
-            }
-        }, completion: nil) //completion: делает блок кода по завершению анимации
-        
-        
-        
-        print(-translation.y / 200)
-        
-    }
+
     
-    //при зажатии на мини трек тянем вверх его
+    
     private func handlePanChange (gesture: UIPanGestureRecognizer) {
         //получаем координаты
         let translation = gesture.translation(in: self.viewForTableView)
         //логика что бы наш контроллер двигался за движением пальца (либо на верх либо вниз, по Y)
         viewForTableView.transform = CGAffineTransform(translationX: 0, y: translation.y)
         //уменьшаем альфу в зависимости от положения нашего мини трек вью
-        let newAlpha = 1 + translation.y / 200
+        
+        
+        let newAlpha = 2 + -translation.y / 200
        
-        self.tableView.alpha = newAlpha > 0 ? 0 : newAlpha
+       // self.tableView.alpha = newAlpha > 0 ? 0 : newAlpha
         //также присваиваем альфу нашему основному трек вью в зависимости от положения translation.y
-        self.tableView.alpha = translation.y / 10
-        print(-translation.y / 200)
+        self.tableView.alpha = newAlpha
+       // print(-translation.y / 200)
     }
     
    
@@ -472,18 +456,19 @@ extension ViewController {
         
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
             self.viewForTableView.transform = .identity //изначальное состояние (иначе все будет съезжать)
-            if translation.y < -100 || speed.y < -500 { //если подняли мини плеер выше 200 поинтов от начального состояния и если скорость выше чем -500
+            if -translation.y > -200  { //если подняли мини плеер выше 200 поинтов от начального состояния и если скорость выше чем -500
                 self.maximizeTableView()
                
                
             } else {
                 self.minimizeTableView()
+              
             }
         }, completion: nil) //completion: делает блок кода по завершению анимации
         
         
         
-        print(-translation.y / 200)
+        print(-translation.y, speed.y )  //-translation.y / 200
         
     }
     
@@ -491,13 +476,14 @@ extension ViewController {
     func maximizeTableView() {
         print("maximizeTrackDetailsController")
         
-        minimizedTopAnchorForConstraint.isActive = false
         
         maximizedTopAnchorForConstraint.isActive = true
         
+        minimizedTopAnchorForConstraint.isActive = false
+        
         
         maximizedTopAnchorForConstraint.constant = 0
-        bottomAnchorConstraint.constant = 0
+        bottomAnchorConstraint.constant =  0
         
         UIView.animate(withDuration: 0.5,
                        delay: 0,
@@ -518,10 +504,10 @@ extension ViewController {
     func minimizeTableView() {
         
         maximizedTopAnchorForConstraint.isActive = false
-        bottomAnchorConstraint.constant = view.frame.height
+        bottomAnchorConstraint.constant = 120
         minimizedTopAnchorForConstraint.isActive = true
         
-        minimizedTopAnchorForConstraint.constant = -40
+       // minimizedTopAnchorForConstraint.constant = 0
         
         UIView.animate(withDuration: 0.5,
                        delay: 0,
@@ -531,8 +517,9 @@ extension ViewController {
                        animations: {
                         self.view.layoutIfNeeded()//обновляет каждую милисекунду(иначе будет каждую сек и мы не увидим)
                        
-                        self.tableView.alpha = 1
-            self.closeTableView.alpha = 1
+                        self.tableView.alpha = 0
+           
+            
         },
                        completion: nil)
     }
