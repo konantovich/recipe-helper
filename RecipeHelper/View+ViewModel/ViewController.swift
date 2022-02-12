@@ -139,8 +139,8 @@ class ViewController: UIViewController {
         closeTableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
-        viewForTableView.backgroundColor = .brown
-        closeTableView.backgroundColor = .red
+        //viewForTableView.backgroundColor = .brown
+        //closeTableView.backgroundColor = .red
         
         view.addSubview(viewForTableView)
         viewForTableView.addSubview(tableView)
@@ -183,63 +183,6 @@ class ViewController: UIViewController {
     
     
 }
-
-//extension ViewController{
-//    func maximizeTrackDetailsController() {
-//        print("maximizeTrackDetailsController")
-//
-//        minimizedTopAnchorForConstraint.isActive = false
-//
-//        maximizedTopAnchorForConstraint.isActive = true
-//
-//
-//        maximizedTopAnchorForConstraint.constant = 0
-//        bottomAnchorConstraint.constant = 0
-//
-//        UIView.animate(withDuration: 0.5,
-//                       delay: 0,
-//                       usingSpringWithDamping: 0.7,
-//                       initialSpringVelocity: 1,
-//                       options: .curveEaseOut,
-//                       animations: {
-//                        self.view.layoutIfNeeded()//обновляет каждую милисекунду(иначе будет каждую сек и мы не увидим)
-//                     //   self.tabBar.alpha = 0//прячем таббар
-//                     //   self.tabBar.transform = CGAffineTransform(translationX: 0, y: 100)
-//                        self.trackDetailView.miniTrackView.alpha = 0
-//                        self.trackDetailView.maximizeStackView.alpha = 1
-//        },
-//                       completion: nil)
-//        guard let viewModel = viewModel else { return }
-//        self.trackDetailView.set(viewModel: viewModel)
-//    }
-//
-//
-//
-//    func minimizeTrackDetailsController() {
-//
-//        maximizedTopAnchorForConstraint.isActive = false
-//        bottomAnchorConstraint.constant = view.frame.height
-//        minimizedTopAnchorForConstraint.isActive = true
-//
-//        UIView.animate(withDuration: 0.5,
-//                       delay: 0,
-//                       usingSpringWithDamping: 0.7,
-//                       initialSpringVelocity: 1,
-//                       options: .curveEaseOut,
-//                       animations: {
-//                        self.view.layoutIfNeeded()//обновляет каждую милисекунду(иначе будет каждую сек и мы не увидим)
-//                        self.tabBar.alpha = 1 //показываем таббар
-//                        self.trackDetailView.miniTrackView.alpha = 1
-//                        self.trackDetailView.maximizeStackView.alpha = 0
-//        },
-//                       completion: nil)
-//    }
-//
-//
-//
-//
-//}
-
 
 
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
@@ -431,16 +374,16 @@ extension ViewController {
         
         
         closeTableView.backgroundColor = .red
-        closeTableView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapMaximized)))//работает по касанию
-        closeTableView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handlePan)))//работает когда водим пальцем
-        closeTableView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handleDissmisPan)))
+       // closeTableView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapMinMax)))//работает по касанию
+        closeTableView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handlePan)))
+      //  closeTableView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handleDissmisPan)))//работает когда водим пальцем
         
      
        
     }
     
-    @objc func handleTapMaximized () {
-        print("Tapped maximized")
+    @objc func handleTapMinMax () {
+        print("Tapped min/max")
        
         if openCloseTableView {
             minimizeTableView()
@@ -449,18 +392,99 @@ extension ViewController {
             maximizeTableView()
             openCloseTableView = true
         }
-      
-        
-        
-        
-        
     }
+    
+    
     @objc func handlePan (gesture: UIPanGestureRecognizer) {
         print("Tapping")
+        
+        switch gesture.state { //.state состояние
+        case .began:
+            print("нажали")
+            
+           // handleDissmisPan (gesture: gesture)
+            
+        case .changed:
+            print("тянем координаты \(gesture.translation(in: self.viewForTableView))")
+            
+            handlePanChange (gesture: gesture)
+            
+        case .ended:
+            print("отпустили зажатие на координатах \(gesture.translation(in: self.viewForTableView))")
+            
+            handlePanEnded (gesture: gesture)
+            
+        @unknown default:
+            print("unknown default gesture")
+        }
+        
     }
     @objc func handleDissmisPan (gesture: UIPanGestureRecognizer) {
         print("Tapped Dissmis")
-       // maximizeTableView()
+        
+        
+        //get coordinate and speed gesture
+        let translation = gesture.translation(in: self.viewForTableView)
+        let speed = gesture.velocity(in: self.viewForTableView)//получам/фиксируем скорость
+        
+        //логика что бы наш контроллер двигался за движением пальца (либо на верх либо вниз, по Y)
+        viewForTableView.transform = CGAffineTransform(translationX: 0, y: translation.y)
+        
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+            self.viewForTableView.transform = .identity //изначальное состояние (иначе все будет съезжать)
+            if translation.y < -200 || speed.y < -500 { //если подняли мини плеер выше 200 поинтов от начального состояния и если скорость выше чем -500
+                self.maximizeTableView()
+            } else {
+                self.minimizeTableView()
+            }
+        }, completion: nil) //completion: делает блок кода по завершению анимации
+        
+        
+        
+        print(-translation.y / 200)
+        
+    }
+    
+    //при зажатии на мини трек тянем вверх его
+    private func handlePanChange (gesture: UIPanGestureRecognizer) {
+        //получаем координаты
+        let translation = gesture.translation(in: self.viewForTableView)
+        //логика что бы наш контроллер двигался за движением пальца (либо на верх либо вниз, по Y)
+        viewForTableView.transform = CGAffineTransform(translationX: 0, y: translation.y)
+        //уменьшаем альфу в зависимости от положения нашего мини трек вью
+        let newAlpha = 1 + translation.y / 200
+       
+        self.tableView.alpha = newAlpha > 0 ? 0 : newAlpha
+        //также присваиваем альфу нашему основному трек вью в зависимости от положения translation.y
+        self.tableView.alpha = translation.y / 10
+        print(-translation.y / 200)
+    }
+    
+   
+    private func handlePanEnded (gesture: UIPanGestureRecognizer) {
+       
+        //get coordinate and speed gesture
+        let translation = gesture.translation(in: self.viewForTableView)
+        let speed = gesture.velocity(in: self.viewForTableView)//получам/фиксируем скорость
+       
+        //логика что бы наш контроллер двигался за движением пальца (либо на верх либо вниз, по Y)
+        viewForTableView.transform = CGAffineTransform(translationX: 0, y: translation.y)
+        
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+            self.viewForTableView.transform = .identity //изначальное состояние (иначе все будет съезжать)
+            if translation.y < -100 || speed.y < -500 { //если подняли мини плеер выше 200 поинтов от начального состояния и если скорость выше чем -500
+                self.maximizeTableView()
+               
+               
+            } else {
+                self.minimizeTableView()
+            }
+        }, completion: nil) //completion: делает блок кода по завершению анимации
+        
+        
+        
+        print(-translation.y / 200)
+        
     }
     
     
@@ -508,6 +532,7 @@ extension ViewController {
                         self.view.layoutIfNeeded()//обновляет каждую милисекунду(иначе будет каждую сек и мы не увидим)
                        
                         self.tableView.alpha = 1
+            self.closeTableView.alpha = 1
         },
                        completion: nil)
     }
