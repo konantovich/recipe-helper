@@ -9,7 +9,7 @@ class MyCustomCell: UITableViewCell {
     lazy var photoRecipe: UIImageView = {
         let imgView = UIImageView()
         imgView.image = UIImage(systemName: "square.and.arrow.up")
-        imgView.contentMode = .scaleAspectFit
+       // imgView.contentMode = .scaleAspectFit
      
         imgView.translatesAutoresizingMaskIntoConstraints = false
         return imgView

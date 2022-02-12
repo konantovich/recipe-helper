@@ -18,6 +18,10 @@ class ViewController: UIViewController {
     private let searchController = UISearchController(searchResultsController: nil)
     
     private let tableView = UITableView()
+    
+    private let viewForTableView = UIView()
+    
+    private let closeTableView = UIView()
     //var recipes = ["Potato", "Tomato", "Bread", "Milk"]
     
     //когда обращаемся к searchBar, если текст уже введен то переменная будет меняется, если нет то просто выходим и false
@@ -39,6 +43,12 @@ class ViewController: UIViewController {
     }
     
     var isApiModeEnable: Bool = true
+    
+    private var minimizedTopAnchorForConstraint: NSLayoutConstraint!
+    private var maximizedTopAnchorForConstraint: NSLayoutConstraint!
+    private var bottomAnchorConstraint: NSLayoutConstraint!
+    
+    var openCloseTableView = true
     
   //  var searchText = "Apple"
  
@@ -64,7 +74,10 @@ class ViewController: UIViewController {
         view.applyGradients(cornerRadius: 0, startColor: startColor, endColor: endColor)
         
         tableView.backgroundColor = .none
+        
         setupTableView()
+        dissmisTableViewGesture ()
+        
         view.addSubview(loadingLabel)
         
        requestSearchData(searchText: "Apple")
@@ -92,7 +105,7 @@ class ViewController: UIViewController {
                           return
                       }
                 
-                self?.recipeModel = (recipe.hits?.prefix(10).compactMap { $0.recipe }) ?? []
+                self?.recipeModel = (recipe.hits?.prefix(13).compactMap { $0.recipe }) ?? []
                 
 //                print(recipe.hits?[0].recipe?.label)
 //                print(self?.recipeModel?.hits?[0].recipe?.label)
@@ -118,18 +131,115 @@ class ViewController: UIViewController {
     }
     
     
+    
+    // MARK: - SetupTableView
     func setupTableView () {
-        view.addSubview(tableView)
+        
+        viewForTableView.translatesAutoresizingMaskIntoConstraints = false
+        closeTableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        
+        viewForTableView.backgroundColor = .brown
+        closeTableView.backgroundColor = .red
+        
+        view.addSubview(viewForTableView)
+        viewForTableView.addSubview(tableView)
+        tableView.addSubview(closeTableView)
+       
+      //  view.insertSubview(tableView, belowSubview: closeTableView)
+        
+        NSLayoutConstraint.activate([
+           // viewForTableView.topAnchor.constraint(equalTo: view.topAnchor),
+            viewForTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            viewForTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            viewForTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+        
+        maximizedTopAnchorForConstraint = viewForTableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0)
+        minimizedTopAnchorForConstraint = viewForTableView.topAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
+        
+        bottomAnchorConstraint = viewForTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: view.frame.height)
+        
+        maximizedTopAnchorForConstraint.isActive = true
+        minimizedTopAnchorForConstraint.isActive = false
+        bottomAnchorConstraint.isActive = false
+     
+       
+        
+        
+        tableView.topAnchor.constraint(equalTo: viewForTableView.topAnchor, constant: 15).isActive = true
         tableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         tableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+    
+       
+        NSLayoutConstraint.activate([
+        closeTableView.heightAnchor.constraint(equalToConstant: 15),
+        closeTableView.widthAnchor.constraint(equalToConstant: 375),
+        closeTableView.bottomAnchor.constraint(equalTo: tableView.topAnchor,constant: 20),
+        
+        ])
     }
     
     
-    
 }
+
+//extension ViewController{
+//    func maximizeTrackDetailsController() {
+//        print("maximizeTrackDetailsController")
+//
+//        minimizedTopAnchorForConstraint.isActive = false
+//
+//        maximizedTopAnchorForConstraint.isActive = true
+//
+//
+//        maximizedTopAnchorForConstraint.constant = 0
+//        bottomAnchorConstraint.constant = 0
+//
+//        UIView.animate(withDuration: 0.5,
+//                       delay: 0,
+//                       usingSpringWithDamping: 0.7,
+//                       initialSpringVelocity: 1,
+//                       options: .curveEaseOut,
+//                       animations: {
+//                        self.view.layoutIfNeeded()//обновляет каждую милисекунду(иначе будет каждую сек и мы не увидим)
+//                     //   self.tabBar.alpha = 0//прячем таббар
+//                     //   self.tabBar.transform = CGAffineTransform(translationX: 0, y: 100)
+//                        self.trackDetailView.miniTrackView.alpha = 0
+//                        self.trackDetailView.maximizeStackView.alpha = 1
+//        },
+//                       completion: nil)
+//        guard let viewModel = viewModel else { return }
+//        self.trackDetailView.set(viewModel: viewModel)
+//    }
+//
+//
+//
+//    func minimizeTrackDetailsController() {
+//
+//        maximizedTopAnchorForConstraint.isActive = false
+//        bottomAnchorConstraint.constant = view.frame.height
+//        minimizedTopAnchorForConstraint.isActive = true
+//
+//        UIView.animate(withDuration: 0.5,
+//                       delay: 0,
+//                       usingSpringWithDamping: 0.7,
+//                       initialSpringVelocity: 1,
+//                       options: .curveEaseOut,
+//                       animations: {
+//                        self.view.layoutIfNeeded()//обновляет каждую милисекунду(иначе будет каждую сек и мы не увидим)
+//                        self.tabBar.alpha = 1 //показываем таббар
+//                        self.trackDetailView.miniTrackView.alpha = 1
+//                        self.trackDetailView.maximizeStackView.alpha = 0
+//        },
+//                       completion: nil)
+//    }
+//
+//
+//
+//
+//}
+
 
 
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
@@ -193,6 +303,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             
             RecipeManager.shared.selectedRecipe = filterRecipeModel[indexPath.row]
             
+          
             RecipeManager.shared.tryAlso = [filterRecipeModel[indexPath.row + 1], filterRecipeModel[indexPath.row + 2], filterRecipeModel[indexPath.row + 3]]
             
             present(DetailViewController(), animated: true, completion: nil)
@@ -200,6 +311,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         } else {
             
             RecipeManager.shared.selectedRecipe = recipeModel[indexPath.row]
+            
             
             RecipeManager.shared.tryAlso = [recipeModel[indexPath.row + 1], recipeModel[indexPath.row + 2], recipeModel[indexPath.row + 3]]
             
@@ -227,6 +339,8 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         
         let apiModeButton = UIButton(frame: CGRect(x: Int(view.frame.width) - 150 , y: 0, width: 125 , height: 30))
         
+       
+        
        // apiModeButton.backgroundColor = .red
         apiModeButton.setTitle("API Mode", for: .normal)
         apiModeButton.setTitleColor( .orange, for: .normal)
@@ -235,6 +349,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         button.setTitle("Sorted by name:", for: .normal)
         button.setTitleColor(.systemPink, for: .normal)
         button.addTarget(self, action:  #selector(sortedButtonAction), for: .touchUpInside)
+        
         header.addSubview(button)
         header.addSubview(apiModeButton)
         
@@ -242,6 +357,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         return header
         
     }
+
     
     @objc func apiModeButtonAction () {
         print("apiModeButtonAction clicked")
@@ -255,7 +371,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             
             print("apiMode Disable")
             isApiModeEnable = true
-            tableView.reloadData()
+           // tableView.reloadData()
         }
         
     }
@@ -300,8 +416,101 @@ extension ViewController: UISearchResultsUpdating {
            requestSearchData(searchText: searchController.searchBar.text!)
             
             
-           // tableView.reloadData()
+          
         
     }
 }
+}
+
+
+
+
+extension ViewController {
+    
+    func dissmisTableViewGesture () {
+        
+        
+        closeTableView.backgroundColor = .red
+        closeTableView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapMaximized)))//работает по касанию
+        closeTableView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handlePan)))//работает когда водим пальцем
+        closeTableView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handleDissmisPan)))
+        
+     
+       
+    }
+    
+    @objc func handleTapMaximized () {
+        print("Tapped maximized")
+       
+        if openCloseTableView {
+            minimizeTableView()
+            openCloseTableView = false
+        } else {
+            maximizeTableView()
+            openCloseTableView = true
+        }
+      
+        
+        
+        
+        
+    }
+    @objc func handlePan (gesture: UIPanGestureRecognizer) {
+        print("Tapping")
+    }
+    @objc func handleDissmisPan (gesture: UIPanGestureRecognizer) {
+        print("Tapped Dissmis")
+       // maximizeTableView()
+    }
+    
+    
+    func maximizeTableView() {
+        print("maximizeTrackDetailsController")
+        
+        minimizedTopAnchorForConstraint.isActive = false
+        
+        maximizedTopAnchorForConstraint.isActive = true
+        
+        
+        maximizedTopAnchorForConstraint.constant = 0
+        bottomAnchorConstraint.constant = 0
+        
+        UIView.animate(withDuration: 0.5,
+                       delay: 0,
+                       usingSpringWithDamping: 0.7,
+                       initialSpringVelocity: 1,
+                       options: .curveEaseOut,
+                       animations: {
+                        self.view.layoutIfNeeded()//обновляет каждую милисекунду(иначе будет каждую сек и мы не увидим)
+                       // self.tabBar.alpha = 0//прячем таббар
+                     //   self.tabBar.transform = CGAffineTransform(translationX: 0, y: 100)
+                       // self.viewForTableView.miniTrackView.alpha = 0
+                        self.tableView.alpha = 1
+        },
+                       completion: nil)
+    
+    }
+    
+    func minimizeTableView() {
+        
+        maximizedTopAnchorForConstraint.isActive = false
+        bottomAnchorConstraint.constant = view.frame.height
+        minimizedTopAnchorForConstraint.isActive = true
+        
+        minimizedTopAnchorForConstraint.constant = -40
+        
+        UIView.animate(withDuration: 0.5,
+                       delay: 0,
+                       usingSpringWithDamping: 0.7,
+                       initialSpringVelocity: 1,
+                       options: .curveEaseOut,
+                       animations: {
+                        self.view.layoutIfNeeded()//обновляет каждую милисекунду(иначе будет каждую сек и мы не увидим)
+                       
+                        self.tableView.alpha = 1
+        },
+                       completion: nil)
+    }
+    
+    
 }

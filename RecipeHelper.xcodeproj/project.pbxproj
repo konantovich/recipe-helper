@@ -26,6 +26,7 @@
 		A024864127B5C302000A9D8A /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A024864027B5C302000A9D8A /* GradientView.swift */; };
 		A024864327B5C3DB000A9D8A /* UIView+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A024864227B5C3DB000A9D8A /* UIView+extension.swift */; };
 		A024864727B67864000A9D8A /* AutoLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = A024864627B67864000A9D8A /* AutoLayout.swift */; };
+		A024864927B7B88E000A9D8A /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A024864827B7B88E000A9D8A /* MainView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +69,7 @@
 		A024864027B5C302000A9D8A /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		A024864227B5C3DB000A9D8A /* UIView+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+extension.swift"; sourceTree = "<group>"; };
 		A024864627B67864000A9D8A /* AutoLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoLayout.swift; sourceTree = "<group>"; };
+		A024864827B7B88E000A9D8A /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,6 +152,7 @@
 			isa = PBXGroup;
 			children = (
 				A01FF0252799CE9B004B0AEF /* ViewController.swift */,
+				A024864827B7B88E000A9D8A /* MainView.swift */,
 				A024863227B517C7000A9D8A /* DetailViewController.swift */,
 				A024863B27B57291000A9D8A /* CollectionViewCell.swift */,
 				A024862D27B3D646000A9D8A /* TableViewCell.swift */,
@@ -325,6 +328,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A024864727B67864000A9D8A /* AutoLayout.swift in Sources */,
+				A024864927B7B88E000A9D8A /* MainView.swift in Sources */,
 				A024863C27B57291000A9D8A /* CollectionViewCell.swift in Sources */,
 				A024862A27B3B84B000A9D8A /* VanekExample.swift in Sources */,
 				A024864127B5C302000A9D8A /* GradientView.swift in Sources */,

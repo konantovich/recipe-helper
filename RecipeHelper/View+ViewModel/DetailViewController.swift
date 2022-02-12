@@ -66,7 +66,7 @@ class DetailViewController: UIViewController {
     lazy var recipeDescription : UILabel = {
         let label = UILabel()
         label.text = "description recipe description recipe description recipe description recipe description recipe description recipe description recipe description recipe "
-        label.numberOfLines = 8
+        label.numberOfLines = 10
         label.font = UIFont(name: label.font.fontName, size: 12)
         
         //…
@@ -145,7 +145,8 @@ class DetailViewController: UIViewController {
         
         //   self.photoRecipe.sd_setImage(with: URL(string: recipe.image ?? ""), completed: nil)
         self.recipeLabel.text = recipe.label
-        self.recipeDescription.text = recipe.ingredientLines?.joined(separator: ", ")
+        self.recipeDescription.text = recipe.ingredientLines?.joined(separator: ", ").replacingOccurrences(of: "(optional)", with: "", options: NSString.CompareOptions.literal, range: nil)  //replacingOccurrences revome word from text
+        
         self.instructionDescription.text = "See a full recipe: \(URL(string: recipe.url ?? "")!)"
         
         print("selectedRecipeModel", recipe)
@@ -171,27 +172,29 @@ class DetailViewController: UIViewController {
         for i in 0..<imagesFromUrl.count {
             let imagesForSwipe = RecipeManager.shared.getImageFromUrl(urlString: imagesFromUrl)
             let imageView = imagesForSwipe[i]
-            //imageView.backgroundColor = .red
+            imageView.backgroundColor = .red
             
             imageView.translatesAutoresizingMaskIntoConstraints = false
             imageView.clipsToBounds = true
+            
             
             // imageView.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
             imageView.contentMode = .scaleAspectFill
             
             //add image on stackview
             stackView.insertArrangedSubview(imageView, at: i)
+            stackView.backgroundColor = .green
             
-      
             imageView.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
+            
         }
         
      
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
+            stackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 0),
             stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: 0),
             stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 0),
-            stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
+            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 0)
         ])
     }
     
@@ -268,10 +271,10 @@ class DetailViewController: UIViewController {
         NSLayoutConstraint.activate([
             
             
-            scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 120),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-            scrollView.heightAnchor.constraint(equalToConstant: 400)
+            scrollView.heightAnchor.constraint(equalToConstant: 400 / 2)
         ])
         
         NSLayoutConstraint.activate([
@@ -288,7 +291,7 @@ class DetailViewController: UIViewController {
             
             recipeDescription.topAnchor.constraint(equalTo: recipeLabel.bottomAnchor, constant: 5 ),
             recipeDescription.leadingAnchor.constraint(equalTo: viewForCollectionView.leadingAnchor, constant: 0),
-            recipeDescription.heightAnchor.constraint(equalToConstant: 80),
+            recipeDescription.heightAnchor.constraint(equalToConstant: 120),
             recipeDescription.widthAnchor.constraint(equalToConstant: view.center.x + 80),
             
         ])
@@ -296,7 +299,7 @@ class DetailViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             
-            instructionDescription.topAnchor.constraint(equalTo: recipeDescription.bottomAnchor, constant: 2),
+            instructionDescription.topAnchor.constraint(equalTo: recipeDescription.bottomAnchor, constant: 20),
             instructionDescription.leadingAnchor.constraint(equalTo: viewForCollectionView.leadingAnchor, constant: 0),
             instructionDescription.heightAnchor.constraint(equalToConstant: 40),
             instructionDescription.widthAnchor.constraint(equalToConstant: view.center.x + 80),
@@ -311,7 +314,7 @@ class DetailViewController: UIViewController {
         ])
         
         NSLayoutConstraint.activate([
-            viewForCollectionView.topAnchor.constraint(equalTo: instructionDescription.bottomAnchor, constant: 20),
+            viewForCollectionView.topAnchor.constraint(equalTo: instructionDescription.bottomAnchor, constant: 60),
             
             viewForCollectionView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             viewForCollectionView.heightAnchor.constraint(equalToConstant: 100),
