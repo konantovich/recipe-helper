@@ -33,7 +33,9 @@ struct Hit: Codable {
 
 
 // MARK: - Recipe
-struct Recipe: Codable {
+struct Recipe: Codable, Equatable {
+ 
+    
     let uri: String?
     let label: String?
     let image: String?
@@ -47,7 +49,11 @@ struct Recipe: Codable {
     let calories, totalWeight: Double?
     let totalTime: Double
     let cuisineType: [String]?
-
+    
+    
+    static func == (lhs: Recipe, rhs: Recipe) -> Bool {
+        return lhs.uri == rhs.uri
+    }
 
 }
 

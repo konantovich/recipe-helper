@@ -90,6 +90,7 @@ class CollectionViewCell: UICollectionViewCell {
         
     }
     
+
     
     
     func setupConstraint() {

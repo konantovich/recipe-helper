@@ -34,6 +34,24 @@ class RecipeManager {
     
     
     
+    func getRandomArray(inInt: Int, outInt: Int) -> [Int] {
+        return (0..<2).map { _ in .random(in: inInt...outInt) }
+    }
+    
+    func getRandomThreeRandomInt (inInt: Int, outInt: Int, currentInt: Int) -> [Int]? {
+        
+        let result = [Int]()
+        
+        let randomInt = Int.random(in: inInt..<outInt)
+        
+        if randomInt == currentInt {
+            
+        }
+        
+        
+        return result
+        
+    }
     
     
 }

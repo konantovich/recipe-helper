@@ -105,7 +105,7 @@ class ViewController: UIViewController {
                           return
                       }
                 
-                self?.recipeModel = (recipe.hits?.prefix(13).compactMap { $0.recipe }) ?? []
+                self?.recipeModel = (recipe.hits?.prefix(10).compactMap { $0.recipe }) ?? []
                 
 //                print(recipe.hits?[0].recipe?.label)
 //                print(self?.recipeModel?.hits?[0].recipe?.label)
@@ -244,21 +244,41 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         
         if isFiltering {
             
+            //filter  
+            
+            let randomInt = Int.random(in: indexPath.row..<filterRecipeModel.count)
+            
+            
             RecipeManager.shared.selectedRecipe = filterRecipeModel[indexPath.row]
             
           
-            RecipeManager.shared.tryAlso = [filterRecipeModel[indexPath.row + 1], filterRecipeModel[indexPath.row + 2], filterRecipeModel[indexPath.row + 3]]
+            RecipeManager.shared.tryAlso = [filterRecipeModel[randomInt], filterRecipeModel[randomInt], filterRecipeModel [randomInt]]
             
             present(DetailViewController(), animated: true, completion: nil)
             
         } else {
+            //let randomInt = Int.random(in: indexPath.row..<recipeModel.count)
             
             RecipeManager.shared.selectedRecipe = recipeModel[indexPath.row]
             
             
-            RecipeManager.shared.tryAlso = [recipeModel[indexPath.row + 1], recipeModel[indexPath.row + 2], recipeModel[indexPath.row + 3]]
             
-            present(DetailViewController(), animated: true, completion: nil)
+            
+//            if recipeModel[indexPath.row] == RecipeManager.shared.tryAlso?[indexPath.row] {
+//
+//
+//                RecipeManager.shared.tryAlso?.remove(at: indexPath.row)
+//                RecipeManager.shared.tryAlso?.shuffle()
+//            }
+//
+            var tryAlsoArray = recipeModel.filter { $0 != recipeModel[indexPath.row] }
+            tryAlsoArray.shuffle()
+            
+            let detailViewController = DetailViewController()
+            detailViewController.tryAlso = tryAlsoArray
+            
+            
+            present(detailViewController, animated: true, completion: nil)
         }
         
        

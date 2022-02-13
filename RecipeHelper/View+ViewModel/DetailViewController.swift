@@ -114,8 +114,6 @@ class DetailViewController: UIViewController {
         
         selectedRecipeModel = RecipeManager.shared.selectedRecipe
         
-        tryAlso = RecipeManager.shared.tryAlso
-        
         
         //        swipeTappedOnPhotoRecipe ()
         
@@ -330,7 +328,8 @@ class DetailViewController: UIViewController {
 
 extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        guard let tryAlso = tryAlso?.count else {return 0}
+        return tryAlso
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -339,6 +338,8 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
         if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? CollectionViewCell {
             //    let data = self.collectionViewData[indexPath.item]
             guard let tryAlso = tryAlso?[indexPath.row] else {
+               
+
                 fatalError("Unable to dequeue subclassed cell")
             }
             cell.setupCell(recipe: tryAlso )
