@@ -306,7 +306,6 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         print("apiModeButtonAction clicked")
         
         if isApiModeEnable {
-            
             print("apiMode Enable")
             isApiModeEnable = false
             tableView.reloadData()
