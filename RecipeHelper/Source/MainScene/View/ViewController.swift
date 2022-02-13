@@ -10,6 +10,8 @@ import SDWebImage
 
 class ViewController: UIViewController {
     
+    var viewModel = ViewModel()
+    
     var recipeModel: [Recipe] = []
     var filterRecipeModel: [Recipe] = []
     
@@ -18,15 +20,11 @@ class ViewController: UIViewController {
     private let searchController = UISearchController(searchResultsController: nil)
     
     private let tableView = UITableView()
-    
     private let viewForTableView = UIView()
-    
     private let closeTableView = UIView()
-    //var recipes = ["Potato", "Tomato", "Bread", "Milk"]
     
-    //когда обращаемся к searchBar, если текст уже введен то переменная будет меняется, если нет то просто выходим и false
+    //когда обращаемся к searchBar, если текст уже введен
     var searchBarIsEmpty: Bool {
-  
         guard let text = searchController.searchBar.text else { return false }
         return text.isEmpty
     }
@@ -38,8 +36,6 @@ class ViewController: UIViewController {
         } else {
             return searchController.isActive && !searchBarIsEmpty
         }
-
-       
     }
     
     var isApiModeEnable: Bool = true
@@ -50,8 +46,6 @@ class ViewController: UIViewController {
     
     var openCloseTableView = true
     
-  //  var searchText = "Apple"
- 
     
     lazy var loadingLabel : UILabel = {
         let label = UILabel()
@@ -60,17 +54,14 @@ class ViewController: UIViewController {
         label.textAlignment = .center
         label.font = UIFont(name: label.font.fontName, size: 23)
         label.numberOfLines = 1
-        //…
-      //  label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    
+    //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let startColor = #colorLiteral(red: 0.7110412717, green: 0.7906122804, blue: 0.8905088305, alpha: 1), endColor = #colorLiteral(red: 0.9450980392, green: 0.8509803922, blue: 0.9568627451, alpha: 1)
-       
         view.applyGradients(cornerRadius: 0, startColor: startColor, endColor: endColor)
         
         tableView.backgroundColor = .none
@@ -80,17 +71,15 @@ class ViewController: UIViewController {
         
         view.addSubview(loadingLabel)
         
-       requestSearchData(searchText: "Apple")
+        requestSearchData(searchText: "Apple")
         
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(MyCustomCell.self, forCellReuseIdentifier: "cell")
         
         setupSearchBar()
-        
-        
     }
-    
+    //MARK: - Network Request
     func requestSearchData (searchText: String) {
         
         timer?.invalidate()
@@ -101,26 +90,16 @@ class ViewController: UIViewController {
                       let hits = recipe.hits,
                       hits.count > 0 else  {
                           print("nil search")
-                          
                           return
                       }
-                
                 self?.recipeModel = (recipe.hits?.prefix(10).compactMap { $0.recipe }) ?? []
-                
-//                print(recipe.hits?[0].recipe?.label)
-//                print(self?.recipeModel?.hits?[0].recipe?.label)
-                // print(self?.recipeModel?.hits?.first.recipe?.label)
                 self?.tableView.reloadData()
                 self?.loadingLabel.text = ""
-                
-                
             }
-            
         })
-        
-        
     }
     
+    // MARK: - SetupSearchBar
     func setupSearchBar () {
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
@@ -129,8 +108,6 @@ class ViewController: UIViewController {
         definesPresentationContext = true
         navigationItem.hidesSearchBarWhenScrolling = false
     }
-    
-    
     
     // MARK: - SetupTableView
     func setupTableView () {
@@ -145,67 +122,45 @@ class ViewController: UIViewController {
         view.addSubview(viewForTableView)
         viewForTableView.addSubview(tableView)
         viewForTableView.addSubview(closeTableView)
-       
-      //  view.insertSubview(tableView, belowSubview: closeTableView)
+        //  view.insertSubview(tableView, belowSubview: closeTableView)
         
         maximizedTopAnchorForConstraint = viewForTableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0)
-        
         minimizedTopAnchorForConstraint = viewForTableView.topAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
-        
-       // bottomAnchorConstraint = viewForTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: view.frame.height)
+        maximizedTopAnchorForConstraint.isActive = true
+        minimizedTopAnchorForConstraint.isActive = false
         
         NSLayoutConstraint.activate([
-           // viewForTableView.topAnchor.constraint(equalTo: view.topAnchor),
+            // viewForTableView.topAnchor.constraint(equalTo: view.topAnchor),
             viewForTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             viewForTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             viewForTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         
-        
-        maximizedTopAnchorForConstraint.isActive = true
-        minimizedTopAnchorForConstraint.isActive = false
-     //   bottomAnchorConstraint.isActive = false
-     
-       
-        
-        
         tableView.topAnchor.constraint(equalTo: closeTableView.topAnchor, constant: 0).isActive = true
         tableView.leftAnchor.constraint(equalTo: viewForTableView.leftAnchor).isActive = true
         tableView.bottomAnchor.constraint(equalTo: viewForTableView.bottomAnchor).isActive = true
         tableView.rightAnchor.constraint(equalTo: viewForTableView.rightAnchor).isActive = true
-    
-       
+        
         NSLayoutConstraint.activate([
-        closeTableView.heightAnchor.constraint(equalToConstant: 15),
-        closeTableView.widthAnchor.constraint(equalToConstant: view.frame.width),
+            closeTableView.heightAnchor.constraint(equalToConstant: 15),
+            closeTableView.widthAnchor.constraint(equalToConstant: view.frame.width),
         ])
         closeTableViewTopAnchorConstraint = closeTableView.topAnchor.constraint(equalTo: viewForTableView.topAnchor)
         closeTableViewTopAnchorConstraint.constant = 140
         closeTableViewTopAnchorConstraint.isActive = true
-        
-        
     }
-    
-    
 }
-
-
+//MARK: - UITableViewDelegate, UITableViewDataSource
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-      
-        
         if isFiltering {
             return filterRecipeModel.prefix(10).count
         }
-        
         return recipeModel.prefix(10).count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        
         
         if let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? MyCustomCell {
             
@@ -219,95 +174,59 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
                 cell.recipeLabel.text = recipe.label
                 cell.recipeDescription.text = recipe.ingredientLines?.joined(separator: ", ")
                 cell.photoRecipe.sd_setImage(with: URL(string: recipe.image ?? ""), completed: nil)
-                
             } else {
                 let recipe = recipeModel.prefix(10)[indexPath.row]
                 
                 cell.recipeLabel.text = recipe.label
                 cell.recipeDescription.text = recipe.ingredientLines?.joined(separator: ", ")
                 cell.photoRecipe.sd_setImage(with: URL(string: recipe.image ?? ""), completed: nil)
-                
-                
-                
             }
             return cell
-            
         }
-        
-        // cell.textLabel?.text = recipeModel?.hits?.prefix(10)[indexPath.row].recipe?.label
-        
         fatalError("could not dequeueReusableCell")
-        
-        
-        
     }
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print(indexPath)
         
-        
-        
         if isFiltering {
-            
-            
             var tryAlsoArray = filterRecipeModel.filter { $0 != filterRecipeModel[indexPath.row] }
             tryAlsoArray.shuffle()
             
             let detailViewController = DetailViewController()
             detailViewController.tryAlso = tryAlsoArray
             
-            
             present(detailViewController, animated: true, completion: nil)
-            
         } else {
-            //let randomInt = Int.random(in: indexPath.row..<recipeModel.count)
             
-            RecipeManager.shared.selectedRecipe = recipeModel[indexPath.row]
-            
-            
-            
-            
-//            if recipeModel[indexPath.row] == RecipeManager.shared.tryAlso?[indexPath.row] {
-//
-//
-//                RecipeManager.shared.tryAlso?.remove(at: indexPath.row)
-//                RecipeManager.shared.tryAlso?.shuffle()
-//            }
-//
+            let detailViewController = DetailViewController()
+            detailViewController.selectedRecipe = recipeModel[indexPath.row]
+            //            if recipeModel[indexPath.row] == RecipeManager.shared.tryAlso?[indexPath.row] {
+            //                RecipeManager.shared.tryAlso?.remove(at: indexPath.row)
+            //                RecipeManager.shared.tryAlso?.shuffle()
+            //            }
+            //
             var tryAlsoArray = recipeModel.filter { $0 != recipeModel[indexPath.row] }
             tryAlsoArray.shuffle()
             
-            let detailViewController = DetailViewController()
             detailViewController.tryAlso = tryAlsoArray
-            
             
             present(detailViewController, animated: true, completion: nil)
         }
-        
-       
-        
-        
     }
-    
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 70
     }
     
-    
-    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         let header = UIView(frame:  CGRect(x: 0,y: 0,width: view.frame.width, height: 30))
-       // header.backgroundColor = .gray
+        // header.backgroundColor = .gray
         
         let button = UIButton(frame: CGRect(x: 10 , y: 0, width: 175, height: 30))
         
         let apiModeButton = UIButton(frame: CGRect(x: Int(view.frame.width) - 150 , y: 0, width: 125 , height: 30))
-        
-       
-        
-       // apiModeButton.backgroundColor = .red
+        // apiModeButton.backgroundColor = .red
         apiModeButton.setTitle("API Mode", for: .normal)
         apiModeButton.setTitleColor( .orange, for: .normal)
         apiModeButton.addTarget(self, action:  #selector(apiModeButtonAction), for: .touchUpInside)
@@ -319,11 +238,8 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         header.addSubview(button)
         header.addSubview(apiModeButton)
         
-        
         return header
-        
     }
-
     
     @objc func apiModeButtonAction () {
         print("apiModeButtonAction clicked")
@@ -333,12 +249,9 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             isApiModeEnable = false
             tableView.reloadData()
         } else {
-            
             print("apiMode Disable")
             isApiModeEnable = true
-           // tableView.reloadData()
         }
-        
     }
     
     @objc func sortedButtonAction() {
@@ -359,60 +272,39 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         return 30
     }
 }
-
-
-
-
+//MARK: - UISearchResultsUpdating
 extension ViewController: UISearchResultsUpdating {
     
     func updateSearchResults(for searchController: UISearchController) {
-        
         print(searchController.searchBar.text ?? "")
-        
         if isApiModeEnable {
-            
             filterRecipeModel = recipeModel.filter {
-                
                 $0.label!.contains(searchController.searchBar.text!)
             }
             tableView.reloadData()
         } else {
-            
-           requestSearchData(searchText: searchController.searchBar.text!)
-            
-            
-          
-        
+            requestSearchData(searchText: searchController.searchBar.text!)
+        }
     }
 }
-}
-
-
-
-
+//MARK: - GestureRecognizer (open/close tableView)
 extension ViewController {
     
     func dissmisTableViewGesture () {
-        
-        
         closeTableView.backgroundColor = .lightGray
         let image = UIImage(systemName: "square.and.arrow.down")?.withTintColor(.gray, renderingMode: .alwaysOriginal)
         let imageView = UIImageView(image: image!)
         imageView.frame = CGRect(x: (375 - 130) / 2 , y: 0, width: 130, height: 10)
-      
-        closeTableView.addSubview(imageView)
-       
         
-       // closeTableView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapMinMax)))//работает по касанию
+        closeTableView.addSubview(imageView)
+        
+        // closeTableView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapMinMax)))
         closeTableView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handlePan)))
-      
-     
-       
     }
     
     @objc func handleTapMinMax () {
         print("Tapped min/max")
-       
+        
         if openCloseTableView {
             minimizeTableView()
             openCloseTableView = false
@@ -422,22 +314,19 @@ extension ViewController {
         }
     }
     
-    
     @objc func handlePan (gesture: UIPanGestureRecognizer) {
         //print("Tapping")
-        
         switch gesture.state { //.state состояние
         case .began:
+            
             print("нажали")
-            
-           // handleDissmisPan (gesture: gesture)
-            
+            // handleDissmisPan (gesture: gesture)
         case .changed:
+            
             //print("тянем координаты \(gesture.translation(in: self.viewForTableView))")
-            
             handlePanChange (gesture: gesture)
-            
         case .ended:
+            
             print("отпустили зажатие на координатах \(gesture.translation(in: self.viewForTableView))")
             
             handlePanEnded (gesture: gesture)
@@ -445,69 +334,43 @@ extension ViewController {
         @unknown default:
             print("unknown default gesture")
         }
-        
     }
-
-    
     
     private func handlePanChange (gesture: UIPanGestureRecognizer) {
-        //получаем координаты
+        //get coordinate
         let translation = gesture.translation(in: self.viewForTableView)
-        //логика что бы наш контроллер двигался за движением пальца (либо на верх либо вниз, по Y)
+        //логика что бы наш контроллер двигался за движением пальца (по Y)
         viewForTableView.transform = CGAffineTransform(translationX: 0, y: translation.y)
-        //уменьшаем альфу в зависимости от положения нашего мини трек вью
-        
-        
+        //уменьшаем альфу в зависимости от положения нашего viewForTableView
         let newAlpha = 2 + -translation.y / 200
-       
-       // self.tableView.alpha = newAlpha > 0 ? 0 : newAlpha
-        //также присваиваем альфу нашему основному трек вью в зависимости от положения translation.y
         self.tableView.alpha = newAlpha
-
         print(newAlpha)
         print(self.tableView.alpha)
     }
     
-   
     private func handlePanEnded (gesture: UIPanGestureRecognizer) {
-       
         //get coordinate and speed gesture
         let translation = gesture.translation(in: self.viewForTableView)
         let speed = gesture.velocity(in: self.viewForTableView)//получам/фиксируем скорость
-       
+        
         //логика что бы наш контроллер двигался за движением пальца (либо на верх либо вниз, по Y)
         viewForTableView.transform = CGAffineTransform(translationX: 0, y: translation.y)
         
-//        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
-//            self.viewForTableView.transform = .identity //изначальное состояние (иначе все будет съезжать)
-            if -translation.y > -200  { //если подняли мини плеер выше 200 поинтов от начального состояния и если скорость выше чем -500
-                self.maximizeTableView()
-                
-            
-            } else {
-                self.minimizeTableView()
-              
-            }
-    //    }, completion: nil) //completion: делает блок кода по завершению анимации
-        
-        
-        
+        if -translation.y > -200 && speed.y < -500  { //если подняли 200 поинтов от начального состояния и если скорость ниже чем -500
+            self.maximizeTableView()
+        } else {
+            self.minimizeTableView()
+        }
         print(-translation.y, speed.y )  //-translation.y / 200
-        
     }
-    
     
     func maximizeTableView() {
         print("maximizeTrackDetailsController")
-        
-        
         maximizedTopAnchorForConstraint.isActive = true
-        
         minimizedTopAnchorForConstraint.isActive = false
         
         closeTableViewTopAnchorConstraint.constant = 140
         maximizedTopAnchorForConstraint.constant = 0
-       // bottomAnchorConstraint.constant =  0
         
         UIView.animate(withDuration: 0.5,
                        delay: 0,
@@ -515,27 +378,19 @@ extension ViewController {
                        initialSpringVelocity: 1,
                        options: .curveEaseOut,
                        animations: {
-                        self.view.layoutIfNeeded()//обновляет каждую милисекунду(иначе будет каждую сек и мы не увидим)
+            self.view.layoutIfNeeded()//обновляет каждую милисекунду(иначе мы не увидим)
             self.viewForTableView.transform = .identity //изначальное состояние (иначе все будет съезжать)
-                       // self.tabBar.alpha = 0//прячем таббар
-                     //   self.tabBar.transform = CGAffineTransform(translationX: 0, y: 100)
-                       // self.viewForTableView.miniTrackView.alpha = 0
-                        self.tableView.alpha = 1
+            self.tableView.alpha = 1
         },
                        completion: nil)
-    
-        //table view - (0 0; 375 672),
-        //viewForTableView (0 140; 375 672)
     }
     
     func minimizeTableView() {
         
         maximizedTopAnchorForConstraint.isActive = false
-     //   bottomAnchorConstraint.constant = 120
         minimizedTopAnchorForConstraint.isActive = true
         closeTableViewTopAnchorConstraint.constant = 0
-        
-       // minimizedTopAnchorForConstraint.constant = 0
+        // minimizedTopAnchorForConstraint.constant = 0
         
         UIView.animate(withDuration: 0.5,
                        delay: 0,
@@ -543,14 +398,10 @@ extension ViewController {
                        initialSpringVelocity: 1,
                        options: .curveEaseOut,
                        animations: {
-                        self.view.layoutIfNeeded()//обновляет каждую милисекунду(иначе будет каждую сек и мы не увидим)
+            self.view.layoutIfNeeded()//обновляет каждую милисекунду(иначе мы не увидим)
             self.viewForTableView.transform = .identity //изначальное состояние (иначе все будет съезжать)
-                        self.tableView.alpha = 0
-           
-            
+            self.tableView.alpha = 0
         },
                        completion: nil)
     }
-    
-    
 }
