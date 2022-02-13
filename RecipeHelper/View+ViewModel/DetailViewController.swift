@@ -16,6 +16,7 @@ class DetailViewController: UIViewController {
     
     var tryAlso: [Recipe]?
     
+    
     var collectionView: UICollectionView!
     // var collectionViewData = [UIColor.red, UIColor.green, UIColor.blue]
     var viewForCollectionView : UIView = {

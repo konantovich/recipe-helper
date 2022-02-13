@@ -46,7 +46,7 @@ class ViewController: UIViewController {
     
     private var minimizedTopAnchorForConstraint: NSLayoutConstraint!
     private var maximizedTopAnchorForConstraint: NSLayoutConstraint!
-    private var bottomAnchorConstraint: NSLayoutConstraint!
+    private var closeTableViewTopAnchorConstraint: NSLayoutConstraint!
     
     var openCloseTableView = true
     
@@ -139,7 +139,7 @@ class ViewController: UIViewController {
         closeTableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
-        //viewForTableView.backgroundColor = .brown
+        viewForTableView.backgroundColor = .brown
         //closeTableView.backgroundColor = .red
         
         view.addSubview(viewForTableView)
@@ -148,9 +148,11 @@ class ViewController: UIViewController {
        
       //  view.insertSubview(tableView, belowSubview: closeTableView)
         
-        maximizedTopAnchorForConstraint = viewForTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0)
+        maximizedTopAnchorForConstraint = viewForTableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0)
+        
         minimizedTopAnchorForConstraint = viewForTableView.topAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
-        bottomAnchorConstraint = viewForTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: view.frame.height)
+        
+       // bottomAnchorConstraint = viewForTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: view.frame.height)
         
         NSLayoutConstraint.activate([
            // viewForTableView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -162,23 +164,26 @@ class ViewController: UIViewController {
         
         maximizedTopAnchorForConstraint.isActive = true
         minimizedTopAnchorForConstraint.isActive = false
-        bottomAnchorConstraint.isActive = true
+     //   bottomAnchorConstraint.isActive = false
      
        
         
         
-        tableView.topAnchor.constraint(equalTo: closeTableView.bottomAnchor, constant: 0).isActive = true
-        tableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        tableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        tableView.topAnchor.constraint(equalTo: closeTableView.topAnchor, constant: 0).isActive = true
+        tableView.leftAnchor.constraint(equalTo: viewForTableView.leftAnchor).isActive = true
+        tableView.bottomAnchor.constraint(equalTo: viewForTableView.bottomAnchor).isActive = true
+        tableView.rightAnchor.constraint(equalTo: viewForTableView.rightAnchor).isActive = true
     
        
         NSLayoutConstraint.activate([
         closeTableView.heightAnchor.constraint(equalToConstant: 15),
         closeTableView.widthAnchor.constraint(equalToConstant: view.frame.width),
-        closeTableView.topAnchor.constraint(equalTo: viewForTableView.topAnchor),
-        
         ])
+        closeTableViewTopAnchorConstraint = closeTableView.topAnchor.constraint(equalTo: viewForTableView.topAnchor)
+        closeTableViewTopAnchorConstraint.constant = 140
+        closeTableViewTopAnchorConstraint.isActive = true
+        
+        
     }
     
     
@@ -244,17 +249,15 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         
         if isFiltering {
             
-            //filter  
             
-            let randomInt = Int.random(in: indexPath.row..<filterRecipeModel.count)
+            var tryAlsoArray = filterRecipeModel.filter { $0 != filterRecipeModel[indexPath.row] }
+            tryAlsoArray.shuffle()
+            
+            let detailViewController = DetailViewController()
+            detailViewController.tryAlso = tryAlsoArray
             
             
-            RecipeManager.shared.selectedRecipe = filterRecipeModel[indexPath.row]
-            
-          
-            RecipeManager.shared.tryAlso = [filterRecipeModel[randomInt], filterRecipeModel[randomInt], filterRecipeModel [randomInt]]
-            
-            present(DetailViewController(), animated: true, completion: nil)
+            present(detailViewController, animated: true, completion: nil)
             
         } else {
             //let randomInt = Int.random(in: indexPath.row..<recipeModel.count)
@@ -460,7 +463,9 @@ extension ViewController {
        // self.tableView.alpha = newAlpha > 0 ? 0 : newAlpha
         //также присваиваем альфу нашему основному трек вью в зависимости от положения translation.y
         self.tableView.alpha = newAlpha
-       // print(-translation.y / 200)
+
+        print(newAlpha)
+        print(self.tableView.alpha)
     }
     
    
@@ -473,17 +478,17 @@ extension ViewController {
         //логика что бы наш контроллер двигался за движением пальца (либо на верх либо вниз, по Y)
         viewForTableView.transform = CGAffineTransform(translationX: 0, y: translation.y)
         
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
-            self.viewForTableView.transform = .identity //изначальное состояние (иначе все будет съезжать)
+//        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+//            self.viewForTableView.transform = .identity //изначальное состояние (иначе все будет съезжать)
             if -translation.y > -200  { //если подняли мини плеер выше 200 поинтов от начального состояния и если скорость выше чем -500
                 self.maximizeTableView()
-               
-               
+                
+            
             } else {
                 self.minimizeTableView()
               
             }
-        }, completion: nil) //completion: делает блок кода по завершению анимации
+    //    }, completion: nil) //completion: делает блок кода по завершению анимации
         
         
         
@@ -500,9 +505,9 @@ extension ViewController {
         
         minimizedTopAnchorForConstraint.isActive = false
         
-        
+        closeTableViewTopAnchorConstraint.constant = 140
         maximizedTopAnchorForConstraint.constant = 0
-        bottomAnchorConstraint.constant =  0
+       // bottomAnchorConstraint.constant =  0
         
         UIView.animate(withDuration: 0.5,
                        delay: 0,
@@ -511,6 +516,7 @@ extension ViewController {
                        options: .curveEaseOut,
                        animations: {
                         self.view.layoutIfNeeded()//обновляет каждую милисекунду(иначе будет каждую сек и мы не увидим)
+            self.viewForTableView.transform = .identity //изначальное состояние (иначе все будет съезжать)
                        // self.tabBar.alpha = 0//прячем таббар
                      //   self.tabBar.transform = CGAffineTransform(translationX: 0, y: 100)
                        // self.viewForTableView.miniTrackView.alpha = 0
@@ -518,13 +524,16 @@ extension ViewController {
         },
                        completion: nil)
     
+        //table view - (0 0; 375 672),
+        //viewForTableView (0 140; 375 672)
     }
     
     func minimizeTableView() {
         
         maximizedTopAnchorForConstraint.isActive = false
-        bottomAnchorConstraint.constant = 120
+     //   bottomAnchorConstraint.constant = 120
         minimizedTopAnchorForConstraint.isActive = true
+        closeTableViewTopAnchorConstraint.constant = 0
         
        // minimizedTopAnchorForConstraint.constant = 0
         
@@ -535,7 +544,7 @@ extension ViewController {
                        options: .curveEaseOut,
                        animations: {
                         self.view.layoutIfNeeded()//обновляет каждую милисекунду(иначе будет каждую сек и мы не увидим)
-                       
+            self.viewForTableView.transform = .identity //изначальное состояние (иначе все будет съезжать)
                         self.tableView.alpha = 0
            
             
