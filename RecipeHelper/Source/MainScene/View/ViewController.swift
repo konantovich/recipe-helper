@@ -10,10 +10,10 @@ import SDWebImage
 
 class ViewController: UIViewController {
     
-    var viewModel = ViewModel()
-    
     var recipeModel: [Recipe] = []
     var filterRecipeModel: [Recipe] = []
+    
+    let viewModel = ViewModel()
     
     private var timer: Timer?
     private var sortRecipeInTableView = true
@@ -38,7 +38,7 @@ class ViewController: UIViewController {
         }
     }
     
-    var isApiModeEnable: Bool = true
+    var isApiModeEnable = true
     
     private var minimizedTopAnchorForConstraint: NSLayoutConstraint!
     private var maximizedTopAnchorForConstraint: NSLayoutConstraint!
@@ -64,39 +64,22 @@ class ViewController: UIViewController {
         let startColor = #colorLiteral(red: 0.7110412717, green: 0.7906122804, blue: 0.8905088305, alpha: 1), endColor = #colorLiteral(red: 0.9450980392, green: 0.8509803922, blue: 0.9568627451, alpha: 1)
         view.applyGradients(cornerRadius: 0, startColor: startColor, endColor: endColor)
         
-        tableView.backgroundColor = .none
-        
         setupTableView()
         dissmisTableViewGesture ()
+        setupSearchBar()
         
         view.addSubview(loadingLabel)
         
         requestSearchData(searchText: "Apple")
-        
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.register(MyCustomCell.self, forCellReuseIdentifier: "cell")
-        
-        setupSearchBar()
     }
     //MARK: - Network Request
     func requestSearchData (searchText: String) {
         
-        timer?.invalidate()
-        timer = Timer.scheduledTimer(withTimeInterval: 1.5, repeats: false, block: { (_) in
-            NetworkService.shared.fetchEdamamRecipes(search: searchText) { [weak self] recipe in
-                
-                guard let recipe = recipe,
-                      let hits = recipe.hits,
-                      hits.count > 0 else  {
-                          print("nil search")
-                          return
-                      }
-                self?.recipeModel = (recipe.hits?.prefix(10).compactMap { $0.recipe }) ?? []
-                self?.tableView.reloadData()
-                self?.loadingLabel.text = ""
-            }
-        })
+        viewModel.requestSearchData(searchText: searchText) { recipe in
+            self.recipeModel = (recipe.hits?.prefix(10).compactMap { $0.recipe }) ?? []
+            self.tableView.reloadData()
+            self.loadingLabel.text = ""
+        }
     }
     
     // MARK: - SetupSearchBar
@@ -112,11 +95,17 @@ class ViewController: UIViewController {
     // MARK: - SetupTableView
     func setupTableView () {
         
+        tableView.backgroundColor = .none
+        
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.register(MyCustomCell.self, forCellReuseIdentifier: "cell")
+        
         viewForTableView.translatesAutoresizingMaskIntoConstraints = false
         closeTableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
-        viewForTableView.backgroundColor = .brown
+        //viewForTableView.backgroundColor = .brown
         //closeTableView.backgroundColor = .red
         
         view.addSubview(viewForTableView)
@@ -320,7 +309,6 @@ extension ViewController {
         case .began:
             
             print("нажали")
-            // handleDissmisPan (gesture: gesture)
         case .changed:
             
             //print("тянем координаты \(gesture.translation(in: self.viewForTableView))")
@@ -378,7 +366,7 @@ extension ViewController {
                        initialSpringVelocity: 1,
                        options: .curveEaseOut,
                        animations: {
-            self.view.layoutIfNeeded()//обновляет каждую милисекунду(иначе мы не увидим)
+            self.view.layoutIfNeeded()//обновляет каждую милисекунду(иначе не увидим)
             self.viewForTableView.transform = .identity //изначальное состояние (иначе все будет съезжать)
             self.tableView.alpha = 1
         },

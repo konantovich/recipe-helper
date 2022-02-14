@@ -14,7 +14,7 @@ class NetworkService {
     
     static let edamamAppKey = "7468549e31571735175ddab07193295e"
     
-    static let shared = NetworkService()
+    //static let shared = NetworkService()
     
     let mainLink = "https://api.edamam.com/api/recipes/v2?q=chiken&app_id=\(edamamAppId)&app_key=\(edamamAppKey)&type=public"
     
@@ -32,7 +32,7 @@ class NetworkService {
         
     }
     
-    func request(url: String, completion: @escaping (Data?, Error?) -> ())  {
+    private func request(url: String, completion: @escaping (Data?, Error?) -> ())  {
         //let urlString = "https://jsonplaceholder.typicode.com/posts/1"
     
         guard let url = URL(string: url) else {return}
@@ -50,7 +50,7 @@ class NetworkService {
     
     
     //связующая функция между Request и парсингом
-    func fetchGenericJSONData <T: Decodable> (urlString: String, response: @escaping (T?) -> ()) {
+   private func fetchGenericJSONData <T: Decodable> (urlString: String, response: @escaping (T?) -> ()) {
         
         request(url: urlString) { data, error in
             

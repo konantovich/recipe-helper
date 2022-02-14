@@ -266,7 +266,6 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
         } else {
             fatalError("Unable to dequeue subclassed cell")
         }
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
